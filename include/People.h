@@ -66,15 +66,34 @@ typedef struct Kee_Atr {
 	uint32_t reaction;	// response ability  
 } Kee_Atr;
 
+typedef enum Play_Pos
+{
+	uint32_t ST;
+	uint32_t AMC;
+	uint32_t AML;
+	uint32_t AMR;
+	uint32_t MC;
+	uint32_t ML;
+	uint32_t MR;
+	uint32_t DM;
+	uint32_t DC;
+	uint32_t DL;
+	uint32_t DR;
+	uint32_t WL;
+	uint32_t WR;
+} Play_Pos;
+
 class player:people {
       public:
 	player() {
-	} ~player() {
+	} 
+	~player() {
 	}
       private:
 	Phy_Atr phy_atr;
 	Men_Atr men_atr;
 	Tec_Atr tec_atr;
+	Play_Pos pos;   // which pos can play, 
 };
 
 class keeper:people {
