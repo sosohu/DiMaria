@@ -4,16 +4,18 @@
 class PlayerStatus
 {
 	public:
-		PlayerStatus(){
+		PlayerStatus(Player& pl, Position& ps, Speed& sp) : player(pl), position(ps), speed(sp){
 		}
 		
 		~PlayerStatus(){
 		}
 
+		uint32_t NextStatus();
+
 	private:
-		Player player;
-		Position	position;
-		Speed	speed;
+		Player& player;
+		Position&	position;
+		Speed&	speed;
 };
 
 class KeeperStatus
@@ -24,6 +26,8 @@ class KeeperStatus
 		
 		~KeeperStatus(){
 		}
+
+		void NextStatus();
 
 	private:
 		Keeper keeper;
@@ -40,6 +44,8 @@ class BallStatus
 		~BallStatus(){
 		}
 
+		void NextStatus();
+
 	private:
 		Ball ball;
 		Position position;
@@ -49,19 +55,25 @@ class BallStatus
 class RealStatus
 {
 	public:
-		RealStatus(){
+		RealStatus(std::vector<PlayerStatus>* pl, std::vector<KeeperStatus>* kp, BallStatus* bl) : player(pl), keeper(kp), ball(bl){
+
 		}
 
 		~RealStatus(){
+
 		}
 
-		void NextStatus(){ // next second's status
-		}
+		void NextStatus();
+
+		void NotifyGoal();
+
+		void ResetStatus();
 
 	private:
-		PlayerStatus* player;  // 20 palyer
-		KeeperStatus* keeper;  // 2 keeper
-		BallStatus	 ball;	  // one ball
+		std::vector<PlayerStatus>* player;  // 20 palyer
+		std::vector<KeeperStatus>* keeper;  // 2 keeper
+		BallStatus*	 ball;	  // one ball
+		bool	BallControl;
 };
 
 

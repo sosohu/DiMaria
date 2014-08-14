@@ -1,14 +1,17 @@
 include $(HOME)/Define.mk
 
 OBJS= $(patsubst %.c,%.o,$(wildcard *.c))
+OBJS+= $(patsubst %.cc,%.o,$(wildcard *.cc))
 
 all:$(OBJS) $(LIB_PATH)/libmy.a $(LIB_PATH)/libmy.so
 
 %.o:%.c
-	$(CC) -I$(INC) -c $^ $(CFLAGS) 
+	$(CXX) -I$(INC) -c $^ $(CXXFLAGS) 
+%.o:%.cc
+	$(CXX) -I$(INC) -c $^ $(CXXFLAGS) 
 
 $(LIB_PATH)/libmy.so:$(OBJS)
-	$(CC) -I$(INC) -shared $^ -o $@ $(CFLAGS)
+	$(CXX) -I$(INC) -fPIC -shared $^ -o $@ $(CXXFLAGS)
 
 $(LIB_PATH)/libmy.a:$(OBJS)
 	$(AR) $(ARFLAGS) $@ $^ 

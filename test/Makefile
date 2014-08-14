@@ -2,7 +2,7 @@
 include $(HOME)/Define.mk
 
 all:
-	$(CC) -I$(INC) -o main main.c -L$(LIB_PATH) -lmy $(LIBS)
+	$(CXX) -I$(INC) -o main main.c -L$(LIB_PATH) -lmy $(LIBS) $(CXXFLAGS)
 
 clean:
 	rm -rf main
