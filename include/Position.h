@@ -3,11 +3,22 @@
 
 #include "comm.h"
 
-typedef struct	Speed
+class Speed
 {
-	uint32_t x_speed;  // m / s
-	uint32_t y_speed; // m/s
-} Diraction;
+	public:
+		Speed(){}
+
+		~Speed(){}
+
+		void set();
+
+		uint32_t get_x_speed();
+
+		uint32_t get_y_speed();
+	private:
+		uint32_t x_speed;  // m / s
+		uint32_t y_speed; // m/s
+};
 
 
 class Position

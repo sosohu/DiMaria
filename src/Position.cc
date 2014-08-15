@@ -2,6 +2,22 @@
 #include <math.h>
 #include <stddef.h>
 
+void Speed::set(uint32_t x, uint32_t y)
+{
+		x_speed = x;
+		y_speed = y;
+}
+
+uint32_t Speed::get_x_speed()
+{
+		return	x_speed;
+}
+
+uint32_t Speed::get_y_speed()
+{
+		return	y_speed;
+}
+
 uint32_t Position::get_x() const
 {
 	return x;

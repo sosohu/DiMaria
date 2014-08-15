@@ -1,4 +1,4 @@
-#include "ghello.h"
+#include "graph/ghello.h"
 
 void init()
 {

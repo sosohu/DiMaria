@@ -10,12 +10,13 @@ class PlayerStatus
 		~PlayerStatus(){
 		}
 
-		uint32_t NextStatus();
+		void	NextStatus();
 
 	private:
 		Player& player;
 		Position&	position;
 		Speed&	speed;
+		bool	catch_ball;
 };
 
 class KeeperStatus
@@ -33,7 +34,15 @@ class KeeperStatus
 		Keeper keeper;
 		Position	position;
 		Speed	speed;
+		bool	catch_ball;
 };
+
+typedef struct
+{
+	uint32_t x_speed;
+	uint32_t y_speed;
+	bool	valid;
+}	Kicked;
 
 class BallStatus
 {
@@ -44,12 +53,15 @@ class BallStatus
 		~BallStatus(){
 		}
 
-		void NextStatus();
+		uint32_t NextStatus();
+
+		void weaken(Speed& sp);
 
 	private:
 		Ball ball;
 		Position position;
 		Speed speed;
+		Kicked kicked;
 };
 
 class RealStatus

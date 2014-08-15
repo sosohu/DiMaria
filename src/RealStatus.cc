@@ -4,21 +4,45 @@ uint32_t BallStatus::NextStatus()
 {	
 	if(ball->position.is_outside()){
 		ball->position.recover_outside();
-		return CONNER_STATUS;
+		ball->speed.set(0,0);
+		return CORNER_STATUS;   // notify corner
 	}
 	
-	if(BallControl){
-
+	if(BallControl){	
+		assert(kicked.valid);
+		ball->speed.set(kicked.x_speed, kicked.y_speed);
 	}
 	else{
 		ball->position.move(ball->speed);
+		weaken(ball->speed);
 	}
 	return 0;
 }
 
+void BallStatus::weaken(Speed& sp)
+{
+	uint32_t x = sp.get_x_speed();
+	uint32_t y = sp.get_y_speed();
+
+	if(x > 0)
+		x = x > AIR_RESISTANCE? x - AIR_RESISTANCE : 0;
+	else
+		x = x < -AIR_RESISTANCE? x + AIR_RESISTANCE : 0;
+
+	if(y > 0)
+		y = y > AIR_RESISTANCE? y - AIR_RESISTANCE : 0;
+	else
+		y = y < -AIR_RESISTANCE? y + AIR_RESISTANCE : 0;
+
+	sp.set(x, y);
+}
+
 void PlayerStatus::NextStatus()
 {
-
+	if(catch_ball){
+		
+		return;
+	}
 }
 
 void KeeperStatus::NextStatus()
@@ -43,5 +67,5 @@ void RealStatus::NextStatus()
 		*iter.NextStatus();
 	}
 
-	ball->NextStatus();
+	ball->NextStatus();  // must be later than player and keeper
 }
