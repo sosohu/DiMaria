@@ -1,7 +1,19 @@
 #ifndef __REALSTATUS__H__
 #define __REALSTATUS__H__
 
-class PlayerStatus
+class Status
+{
+	public:
+		Status(){}
+		virtual	~Status(){}
+		
+		virtual void NextStatus() const {}
+	private:
+		Position&	position;
+		Speed&	speed;
+};
+
+class PlayerStatus : public Status
 {
 	public:
 		PlayerStatus(Player& pl, Position& ps, Speed& sp) : player(pl), position(ps), speed(sp){
@@ -14,12 +26,10 @@ class PlayerStatus
 
 	private:
 		Player& player;
-		Position&	position;
-		Speed&	speed;
 		bool	catch_ball;
 };
 
-class KeeperStatus
+class KeeperStatus : public Status
 {
 	public:
 		KeeperStatus(){
@@ -32,8 +42,6 @@ class KeeperStatus
 
 	private:
 		Keeper keeper;
-		Position	position;
-		Speed	speed;
 		bool	catch_ball;
 };
 
@@ -44,7 +52,7 @@ typedef struct
 	bool	valid;
 }	Kicked;
 
-class BallStatus
+class BallStatus : public Status
 {
 	public:
 		BallStatus(){
@@ -59,8 +67,6 @@ class BallStatus
 
 	private:
 		Ball ball;
-		Position position;
-		Speed speed;
 		Kicked kicked;
 };
 

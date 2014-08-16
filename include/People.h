@@ -83,7 +83,7 @@ typedef enum Play_Pos
 	uint32_t WR;
 } Play_Pos;
 
-class player:people {
+class player : public people {
       public:
 	player() {
 	} 
@@ -96,7 +96,7 @@ class player:people {
 	Play_Pos pos;   // which pos can play, 
 };
 
-class keeper:people {
+class keeper : public people {
       public:
 	keeper() {
 	} ~keeper() {

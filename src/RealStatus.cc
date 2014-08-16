@@ -37,6 +37,12 @@ void BallStatus::weaken(Speed& sp)
 	sp.set(x, y);
 }
 
+// sp is player/keeper status, sb is ball status
+void SmartSelect(Status& sp, Status& sb, bool catch_ball = false) 
+{
+	
+}
+
 void PlayerStatus::NextStatus()
 {
 	if(catch_ball){
