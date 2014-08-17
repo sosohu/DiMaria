@@ -20,7 +20,6 @@ class Speed
 		uint32_t y_speed; // m/s
 };
 
-
 class Position
 {
 	public:
