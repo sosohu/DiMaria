@@ -11,8 +11,8 @@ class Status
 		
 		virtual void NextStatus() const {}
 	private:
-		Position&	position;
-		Speed&	speed;
+		Position	position;
+		Speed	speed;
 };
 
 class PlayerStatus : public Status
@@ -43,7 +43,7 @@ class KeeperStatus : public Status
 		void NextStatus();
 
 	private:
-		Keeper keeper;
+		Keeper &keeper;
 		bool	catch_ball;
 };
 
@@ -101,30 +101,29 @@ typedef	struct StatusInfo
 {
 	// distance of each two boys,the 3rd dim declares x diraction and y diraction 
 	uint32_t distance_boy[NUM_BOYS][NUM_BOYS][2]; 
-	// the value declares the num of opposide's plyer who is around(3 m X 3 m)
-	// the value equal 0 means the boy is freedom
-	uint32_t freedom_boy[NUM_BOYS]; 
-	// distance of boys and opposide's gate
+	/* the value declares the num of opposide's plyer who is around(3 m X 3 m)
+	   the value equal 0 means the boy is freedom */
+	uint32_t around_boys[NUM_BOYS]; 
+	// distance of boys and opposide's gate with x distance and y distance
 	uint32_t distance_gate[NUM_BOYS][2];
-	// distance of boys and ball
+	// distance of boys and ball with x distance and y distance
 	uint32_t distance_ball[NUM_BOYS][2];
 }	StatusInfo;
 
 typedef struct TacticsInfo
 {
 	enum Total{
-		ATTACK, 
-		DEFEND,
-		DEFATT, // defend and attack
-		CONTROL,
-		NORMAL
+		ATTACK, // attack like the Dortmund
+		DEFEND, // defend like the Chelsea
+		BLANCE, // defend and attack RM
+		CONTROL // control the ball like FCB
 	} total;
 
 	enum Detail{
-		Slide_Pass,// pass ball the middle from the side
+		Slide_Pass,// pass ball to the middle from the side
 		Short_Pass, // short pass penetration
 		Shoot_More, // shoot at any chance
-		ForWard_More, // foeward more to attack
+		ForWard_More, // forward more to attack
 
 		Back_More,  // pull back to defend
 		Steal_More, // more steal to defend
@@ -152,11 +151,10 @@ class RealStatus
 		void ComputeStatus();
 
 	private:
-		// 1 ~ 10 is up side, 11 ~ 20 is down side
-		std::vector<PlayerStatus>* player;  // 20 palyer
-		// 1 is up side, 2 is down side
-		std::vector<KeeperStatus>* keeper;  // 2 keeper
-		BallStatus*	 ball;	  // one ball
+		// 0~9 is up side, 10~19 is down side, 20 is up keeper, 21 is down keeper
+		std::vector<Status> &player;  // 20 palyer
+		//std::vector<KeeperStatus> *keeper;  // 2 keeper
+		BallStatus	 &ball;	  // one ball
 		bool	BallControl;  // when is ture, the ball is catched by one boy
 		/* 
 			the id of the boy who catch the ball, 0 ~ 9 is the up side's player,
@@ -166,7 +164,7 @@ class RealStatus
 		uint32_t	catch_boy; // only valid when BallControl is true
 
 		StatusInfo	si;
-		TacticsInfo& ti_up, ti_down;
+		TacticsInfo &ti_up, &ti_down;
 };
 
 

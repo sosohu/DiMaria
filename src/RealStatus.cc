@@ -58,38 +58,40 @@ void KeeperStatus::NextStatus()
 
 void RealStatus::ComputeStatus()
 {
-	uint32_t len = player->size();
+	uint32_t len = player.size();
 	// compute the distance_boy
+	// for player to player
 	for(uint32_t i = 0; i < len -1; i++){
 		for(uint32_t j = i + 1; j < len; j++){
-			si.distance_boy[i][j][0] = (*player)[j].position.get_x() 
-										- (*player)[i].position.get_x(); 
-			si.distance_boy[i][j][1] = (*player)[j].position.get_y() 
-										- (*player)[i].position.get_y(); 
+			si.distance_boy[i][j][0] = player[j].position.get_x() 
+										- player[i].position.get_x(); 
+			si.distance_boy[i][j][1] = player[j].position.get_y() 
+										- player[i].position.get_y(); 
 			si.distance_boy[j][i][0] = -si.distance_boy[j][i][0];
 			si.distance_boy[j][i][1] = -si.distance_boy[j][i][1];
 		}
 	}
+	// for keeper to palyer
 	for(uint32_t i = 0; i < len; i++){
-		si.distance_boy[20][i][0] = (*player)[i].position.get_x()
-									- (*player)[20].position.get_x();
-		si.distance_boy[20][i][1] = (*player)[i].position.get_y()
-									- (*player)[20].position.get_y();
+		si.distance_boy[20][i][0] = player[i].position.get_x()
+									- player[20].position.get_x();
+		si.distance_boy[20][i][1] = player[i].position.get_y()
+									- player[20].position.get_y();
 		si.distance_boy[i][20][0] = -si.distance_boy[20][i][0];
 		si.distance_boy[i][20][1] = -si.distance_boy[20][i][1];
 
-		si.distance_boy[21][i][0] = (*player)[i].position.get_x()
-									- (*player)[21].position.get_x();
-		si.distance_boy[21][i][1] = (*player)[i].position.get_y()
-									- (*player)[21].position.get_y();
+		si.distance_boy[21][i][0] = player[i].position.get_x()
+									- player[21].position.get_x();
+		si.distance_boy[21][i][1] = player[i].position.get_y()
+									- player[21].position.get_y();
 		si.distance_boy[i][21][0] = -si.distance_boy[21][i][0];
 		si.distance_boy[i][21][1] = -si.distance_boy[21][i][1];
 	}
-
-	si.distance_boy[20][21][0] = (*player)[21].position.get_x()
-								- (*player)[20].position.get_x();
-	si.distance_boy[20][21][1] = (*player)[21].position.get_y()
-								- (*player)[20].position.get_y();
+	// for keeper to keeper
+	si.distance_boy[20][21][0] = player[21].position.get_x()
+								- player[20].position.get_x();
+	si.distance_boy[20][21][1] = player[21].position.get_y()
+								- player[20].position.get_y();
 	si.distance_boy[21][20][0] = -si.distance_boy[20][21][0];
 	si.distance_boy[21][20][1] = -si.distance_boy[20][21][1];
 
@@ -97,6 +99,7 @@ void RealStatus::ComputeStatus()
 	for(uint32_t i = 0; i < 10; i++){
 		si.freedom_boy[i]	=	0;
 		si.freedom_boy[i + 10]	=	0;
+		// player to player
 		for(uint32_t j = 10; j < 20; j++){
 				if(	(abs(si.distance_boy[i][j][0]) <= FREE_DIS) ||
 					(abs(si.distance_boy[i][j][1]) <= FREE_DIS) ){
@@ -105,11 +108,13 @@ void RealStatus::ComputeStatus()
 				}
 			}	
 		}
+		// player to keeper
 		if(	(abs(si.distance_boy[i][21][0]) <= FREE_DIS) ||
 			(abs(si.distance_boy[i][21][1]) <= FREE_DIS) ){
 			si.freedom_boy[i]++;
 			si.freedom_boy[21]++;
 		}
+		// player to keeper
 		if(	(abs(si.distance_boy[i + 10][20][0]) <= FREE_DIS) ||
 			(abs(si.distance_boy[i + 10][20][1]) <= FREE_DIS) ){
 			si.freedom_boy[i + 10]++;
@@ -117,11 +122,38 @@ void RealStatus::ComputeStatus()
 		}
 	}
 
-	// compute the distance_gate
+	// compute the distance to the offside 's gate
+	// for up side
 	for(uint32_t i = 0; i < 10; i++){
-			si.distance_gate[i][0] = 	
+		si.distance_gate[i][0] = FIELD_WIDTH/2 - player[i].position.get_x();	
+		si.distance_gate[i][1] = player[i].position.get_y();	
 	}
-	
+	si.distance_gate[20][0] = FIELD_WIDTH/2 - player[20].position.get_x();
+	si.distance_gate[20][1] = player[20].position.get_y();	
+	// for down side
+	for(uint32_t i = 10; i < 20; i++){
+		si.distance_gate[i][0] = FIELD_WIDTH/2 - player[i].position.get_x();	
+		si.distance_gate[i][1] = FIELD_LENGTH - player[i].position.get_y();	
+	}
+	si.distance_gate[21][0] = FIELD_WIDTH/2 - player[21].position.get_x();
+	si.distance_gate[21][1] = FIELD_LENGTH - player[21].position.get_y();	
+	// compute the distance to the ball
+	int ball_x = ball.position.get_x();
+	int ball_y = ball.position.get_y();
+	for(uint32_t i = 0; i < NUM_BOYS; i++){
+		si.distance_ball[i][0] = ball_x - player[i].position.get_x();
+		si.distance_ball[i][1] = ball_y - player[i].position.get_y();
+	}
+
+	// compute wheather the ball is controled and who control it
+	BallControl = false;
+	for(uint32_t i = 0; i< NUM_BOYS; i++){
+		if(si.distance_ball[i][0] == 0 && si.distance_ball[i][1] == 0){
+			BallControl = true;
+			catch_boy = i;
+			break;
+		}
+	}
 }
 
 /*
