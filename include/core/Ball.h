@@ -14,7 +14,7 @@ class Ball
 		}
 
 	private:
-		Ball_Position pisiton;
+		Position pisiton;
 		Speed	speed;
 };
 

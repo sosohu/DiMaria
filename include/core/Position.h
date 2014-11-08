@@ -10,7 +10,7 @@ class Speed
 
 		~Speed(){}
 
-		void set();
+		void set(uint32_t x, uint32_t y);
 
 		uint32_t get_x_speed();
 
@@ -41,9 +41,17 @@ class Position
 
 		bool set_y(uint32_t	x);
 
+		void is_corner();
+
+		// tell the ball whether is outside.
 		bool is_outside();
 
 		void recover_outside();
+
+		/* if up = true, tell wheather the goal is in the up gate.
+		   else tell wheather the goal is in the down gate.
+		*/
+		bool is_goal();
 
 		int	left(Position& rhs );
 

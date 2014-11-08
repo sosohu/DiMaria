@@ -1,10 +1,10 @@
 #ifndef __PEOPLE__H__
 #define __PEOPLE__H__
 
-class people {
+class People {
       public:
-	people() {
-	} ~people() {
+	People() {
+	} ~People() {
 	}
       private:
 	uint32_t age;
@@ -83,26 +83,38 @@ typedef enum Play_Pos
 	WR,
 } Play_Pos;
 
-class player : public people {
+class Player : public People {
       public:
-	player() {
+	Player() {
 	} 
-	~player() {
+	~Player() {
 	}
+
+	Phy_Atr getPhy_Atr();
+
+	Men_Atr getMen_Atr();
+
+	Tec_Atr getTec_Atr();
+
+	Kee_Atr getKee_Atr();
+
       private:
 	Phy_Atr phy_atr;
 	Men_Atr men_atr;
 	Tec_Atr tec_atr;
+	Kee_Atr kee_atr;
 	Play_Pos pos;   // which pos can play, 
 };
 
-class keeper : public people {
+/*
+class Keeper : public People {
       public:
-	keeper() {
-	} ~keeper() {
+	Keeper() {
+	} ~Keeper() {
 	}
       private:
 	Kee_Atr kee_atr;
 };
+*/
 
 #endif

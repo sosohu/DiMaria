@@ -1,7 +1,7 @@
 #ifndef __REALSTATUS__H__
 #define __REALSTATUS__H__
-#include "include/People.h"
-#include "include/Position.h"
+#include "People.h"
+#include "Position.h"
 
 class Status
 {
@@ -10,6 +10,28 @@ class Status
 		virtual	~Status(){}
 		
 		virtual void NextStatus() const {}
+
+		void setPosition(uint32_t x, uint32_t y);
+
+		void setPositionMove(Speed &sp);
+
+		void setPositionRecover_Outside();
+
+		void setSpeed(uint32_t x, uint32_t y);
+
+		Position getPosition();
+
+		uint32_t getPositionX();
+
+		uint32_t getPositionY();
+
+		bool getPositionIs_goal();
+
+		bool getPositionIs_outside();
+
+		bool getPositionIs_corner();
+		
+		Speed getSpeed();
 	private:
 		Position	position;
 		Speed	speed;
@@ -26,11 +48,22 @@ class PlayerStatus : public Status
 
 		void	NextStatus();
 
+		Player getPlayer();
+
+		Phy_Atr getPlayerPhy_Atr();
+
+		Men_Atr getPlayerMen_Atr();
+
+		Tec_Atr getPlayerTec_Atr();
+
+		Kee_Atr getPlayerKee_Atr();
+
 	private:
-		Player& player;
-		bool	catch_ball;
+		Player &player;
+		//bool	catch_ball;
 };
 
+/*
 class KeeperStatus : public Status
 {
 	public:
@@ -42,10 +75,13 @@ class KeeperStatus : public Status
 
 		void NextStatus();
 
+		Keeper getPlayer();
+
 	private:
-		Keeper &keeper;
-		bool	catch_ball;
+		Keeper &player;
+		//bool	catch_ball;
 };
+*/
 
 typedef struct
 {
@@ -67,9 +103,11 @@ class BallStatus : public Status
 
 		void weaken(Speed& sp);
 
+		Ball getBall();
+
 	private:
 		Ball ball;
-		Kicked kicked;
+		//Kicked kicked;
 };
 
 typedef strcut	
@@ -115,8 +153,7 @@ typedef struct TacticsInfo
 	enum Total{
 		ATTACK, // attack like the Dortmund
 		DEFEND, // defend like the Chelsea
-		BLANCE, // defend and attack RM
-		CONTROL // control the ball like FCB
+		CONTROL // control like the FCB
 	} total;
 
 	enum Detail{
@@ -124,6 +161,7 @@ typedef struct TacticsInfo
 		Short_Pass, // short pass penetration
 		Shoot_More, // shoot at any chance
 		ForWard_More, // forward more to attack
+		Break_More, // break througth more
 
 		Back_More,  // pull back to defend
 		Steal_More, // more steal to defend
@@ -134,27 +172,57 @@ typedef struct TacticsInfo
 class RealStatus
 {
 	public:
-		RealStatus(std::vector<PlayerStatus>* pl, std::vector<KeeperStatus>* kp, BallStatus* bl) : player(pl), keeper(kp), ball(bl){
-
+		RealStatus(std::vector<Status> &pl, BallStatus &bl, TacticsInfo &ti_up,
+					TacticsInfo &ti_down, vector<Position> &init_position,
+					Position &init_ball) : player(pl), ball(bl), ti_up(ti_up),
+					ti_down(ti_down), init_position(init_position, 
+					init_ball(init_ball)){
+			ResetStatus();
 		}
 
 		~RealStatus(){
 
 		}
 
-		void NextStatus();
+		// next status, core func and have the effect on the game.
+		uint32_t NextStatus();
 
+		// when the goal, notify.
 		void NotifyGoal();
 
+		// reset the status after the goal.
 		void ResetStatus();
 
+		// start corner.
+		void StartCorner();
+
+		// start freeball.
+		void StartFree();
+
+		// start outside
+		void StartOutside(); 
+
+		// compute the status each times and perpare for the Status.
 		void ComputeStatus();
 
+		// return the comment of match by the Status.
+		string TextComment();
+
+	private:
+		
+		// id is player/keeper's id who catch the ball
+		void SmartSelect(uint32_t id);
+
+		//	
+		void SmartDefend(uint32_t id);
+
+		void SmartAttack(uint32_t id);
 	private:
 		// 0~9 is up side, 10~19 is down side, 20 is up keeper, 21 is down keeper
 		std::vector<Status> &player;  // 20 palyer
 		//std::vector<KeeperStatus> *keeper;  // 2 keeper
 		BallStatus	 &ball;	  // one ball
+
 		bool	BallControl;  // when is ture, the ball is catched by one boy
 		/* 
 			the id of the boy who catch the ball, 0 ~ 9 is the up side's player,
@@ -163,8 +231,24 @@ class RealStatus
 		*/
 		uint32_t	catch_boy; // only valid when BallControl is true
 
+		/* the ball is outside and turn to the outside ball status
+			judge the position by the ball's position
+		*/
+		bool outside;
+
+		/* the ball is turn to the corner status
+			judge the position by the ball's position
+		*/
+		bool corner;
+
 		StatusInfo	si;
 		TacticsInfo &ti_up, &ti_down;
+
+		// record the comment of game
+		string status_comment;
+		// init position
+		vector<Position> init_position;
+		Position init_ball;
 };
 
 

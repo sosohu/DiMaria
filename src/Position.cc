@@ -40,11 +40,16 @@ bool Position::set_y(uint32_t y_val)
 	return true;
 }
 
+bool Position::is_corner()
+{
+	if(y < 0 || y > FIELD_LENGTH)
+		return true;
+	return false;	
+}
+
 bool Position::is_outside()
 {
 	if(x < 0 || x > FIELD_WIDTH)
-		return true;
-	if(y < 0 || y > FIELD_LENGTH)
 		return true;
 	return false;
 }
@@ -81,6 +86,15 @@ void Position::recover_outside()
 		x = FIELD_WIDTH;
 
 	return;
+}
+
+bool Position::is_goal()
+{
+	if(y < 0 && x > (FIELD_WIDTH - GATE_WIDTH)/2 && x < (FIELD_WIDTH + GATE_WIDTH)/2)
+		return true;
+	if(y > FIELD_LENGTH && x > (FIELD_WIDTH - GATE_WIDTH)/2 && x < (FIELD_WIDTH + GATE_WIDTH)/2)
+		return true;
+	return false;	
 }
 
 int Position::left(Position& rhs)
