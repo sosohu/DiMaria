@@ -1,0 +1,55 @@
+<--! players.xml save the players attritude >
+
+<player>
+	<name></name>
+	<id></id>
+	<Bas_Atr>
+		<age></age>
+		<height></height>
+		<weight></weight>
+		<country_id></country_id>
+	</Bas_Atr>
+	<Phy_Atr>
+		<pace></pace>
+		<strength></strength>
+		<jump></jump>
+		<stamina></stamina>
+		<acceleration></acceleration>
+		<health></health>
+	</Phy_Atr>
+	<Men_Atr>
+		<bravery></bravery>
+		<influence></influence>
+		<creativity></creativity>
+		<off_ball></off_ball>
+		<position></position>
+		<concentration></concentration>
+		<judge></judge>
+	</Men_Atr>
+	<Tec_Atr>
+		<dribbling></dribbling>
+		<finishing></finishing>
+		<crossing></crossing>
+		<heading></heading>
+		<passing></passing>
+		<corners></corners>
+		<throwers></throwers>
+		<free_kick></free_kick>
+		<point></point>
+		<touch></touch>
+		<long_shoot></long_shoot>
+		<marking></marking>
+		<tracking></tracking>
+	</Tec_Atr>
+	<Kee_Atr>
+		<command></command>
+		<handing></handing>
+		<kicking></kicking>
+		<air_control></air_control>
+		<one2one></one2one>
+		<throwing></throwing>
+		<rush_out></rush_out>
+		<reaction></reaction>
+	</Kee_Atr>
+	<Play_Pos></Play_Pos>
+</player>
