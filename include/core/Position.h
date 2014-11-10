@@ -6,7 +6,7 @@
 class Speed
 {
 	public:
-		Speed(){}
+		Speed(uint32_t x_speed, uint32_t y_speed):x_speed(x_speed), y_speed(y_speed){}
 
 		~Speed(){}
 
@@ -23,7 +23,7 @@ class Speed
 class Position
 {
 	public:
-		Position(uint32_t x, uint32_t y, bool down): x(x), y(y), is_down(down){
+		Position(uint32_t x, uint32_t y, bool is_down): x(x), y(y), is_down(is_down){
 		}
 
 		//Position(const Position& other){}          // copy construct function
@@ -41,7 +41,7 @@ class Position
 
 		bool set_y(uint32_t	x);
 
-		void is_corner();
+		bool is_corner();
 
 		// tell the ball whether is outside.
 		bool is_outside();
@@ -74,7 +74,7 @@ class Position
 	private:
 		uint32_t x; // width offside to the 0 dot
 		uint32_t y; // length offside to the 0 dot
-		bool 	is_down; // down == ture , the player is belonged to the down, others, up
+		bool is_down;
 };
 
 

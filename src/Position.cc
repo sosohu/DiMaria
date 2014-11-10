@@ -131,8 +131,8 @@ int Position::down(Position& rhs)
 
 void Position::move(Speed& sp)
 {
-	x = x + sp.x_speed;
-	y = y + sp.y_speed;
+	x = x + sp.get_x_speed();
+	y = y + sp.get_y_speed();
 }
 
 bool Position::in_penalty_area()

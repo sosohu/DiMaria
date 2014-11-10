@@ -13,11 +13,13 @@ ARFLAGS	Define.mk	/^ARFLAGS=-r$/;"	m
 ATTACK	include/core/RealStatus.h	/^		ATTACK, \/\/ attack like the Dortmund$/;"	e	enum:TacticsInfo::Total
 BUFFSIZE	include/unix/data.h	4;"	d
 Back_More	include/core/RealStatus.h	/^		Back_More,  \/\/ pull back to defend$/;"	e	enum:TacticsInfo::Detail
-Ball	include/core/Ball.h	/^		Ball(){$/;"	f	class:Ball
+Ball	include/core/Ball.h	/^		Ball(Position p, Speed s):position(p), speed(s){$/;"	f	class:Ball
 Ball	include/core/Ball.h	/^class Ball$/;"	c
 BallControl	include/core/RealStatus.h	/^		bool	BallControl;  \/\/ when is ture, the ball is catched by one boy$/;"	m	class:RealStatus
-BallStatus	include/core/RealStatus.h	/^		BallStatus(){$/;"	f	class:BallStatus
+BallStatus	include/core/RealStatus.h	/^		BallStatus(Ball ball):ball(ball){$/;"	f	class:BallStatus
 BallStatus	include/core/RealStatus.h	/^class BallStatus : public Status$/;"	c
+Bas_Atr	include/core/People.h	/^typedef struct Bas_Atr {$/;"	s
+Bas_Atr	include/core/People.h	/^} Bas_Atr;$/;"	t	typeref:struct:Bas_Atr
 Break_More	include/core/RealStatus.h	/^		Break_More, \/\/ break througth more$/;"	e	enum:TacticsInfo::Detail
 CC	Define.mk	/^CC=gcc$/;"	m
 CFLAGS	Define.mk	/^CFLAGS=-O3$/;"	m
@@ -46,10 +48,6 @@ IINC	src/Makefile	/^IINC=-I$(INC)\/core -I$(INC)\/graph -I$(INC)\/unix$/;"	m
 INC	Define.mk	/^INC=$(HOME)\/include$/;"	m
 Kee_Atr	include/core/People.h	/^typedef struct Kee_Atr {$/;"	s
 Kee_Atr	include/core/People.h	/^} Kee_Atr;$/;"	t	typeref:struct:Kee_Atr
-Keeper	include/core/People.h	/^	Keeper() {$/;"	f	class:Keeper
-Keeper	include/core/People.h	/^class Keeper : public People {$/;"	c
-KeeperStatus	include/core/RealStatus.h	/^		KeeperStatus(){$/;"	f	class:KeeperStatus
-KeeperStatus	include/core/RealStatus.h	/^class KeeperStatus : public Status$/;"	c
 Kicked	include/core/RealStatus.h	/^}	Kicked;$/;"	t	typeref:struct:__anon1
 LIBGL	Define.mk	/^LIBGL=-lglut -lGLU -lGL -lm$/;"	m
 LIBS	Define.mk	/^LIBS=$(LIBGL)$/;"	m
@@ -65,27 +63,27 @@ NUM_PLAYERS	include/core/comm.h	/^const uint32_t	NUM_PLAYERS = 20;  \/\/ on the 
 NUM_POS	include/core/comm.h	/^const uint32_t	NUM_POS = 20;   \/\/ the num of pos who boy can play: ST , AMC ...$/;"	v
 NextStatus	include/core/RealStatus.h	/^		virtual void NextStatus() const {}$/;"	f	class:Status
 NextStatus	src/RealStatus.cc	/^uint32_t BallStatus::NextStatus()$/;"	f	class:BallStatus
-NextStatus	src/RealStatus.cc	/^void KeeperStatus::NextStatus()$/;"	f	class:KeeperStatus
 NextStatus	src/RealStatus.cc	/^void PlayerStatus::NextStatus()$/;"	f	class:PlayerStatus
 OBJS	src/Makefile	/^OBJS= $(patsubst %.c,%.o,$(wildcard *.c))$/;"	m
 ON_BOUNDARY	include/core/comm.h	/^const uint32_t	ON_BOUNDARY = -1; $/;"	v
 OUT_STATUS	include/core/comm.h	/^const uint32_t OUT_STATUS = 0xa3;$/;"	v
+OVER_STATUS	include/core/comm.h	/^const uint32_t OVER_STATUS = 0xa0;$/;"	v
 Offside_Trap	include/core/RealStatus.h	/^		Offside_Trap \/\/ make the offside trap$/;"	e	enum:TacticsInfo::Detail
 PENALTY_LENGTH	include/core/comm.h	/^const uint32_t	PENALTY_LENGTH = 16;$/;"	v
 PENALTY_WIDTH	include/core/comm.h	/^const uint32_t	PENALTY_WIDTH = 40; $/;"	v
-People	include/core/People.h	/^	People() {$/;"	f	class:People
+People	include/core/People.h	/^		People(Bas_Atr b):bas_atr(b) {} $/;"	f	class:People
 People	include/core/People.h	/^class People {$/;"	c
 Phy_Atr	include/core/People.h	/^typedef struct Phy_Atr {$/;"	s
 Phy_Atr	include/core/People.h	/^} Phy_Atr;$/;"	t	typeref:struct:Phy_Atr
 Play_Pos	include/core/People.h	/^typedef enum Play_Pos$/;"	g
 Play_Pos	include/core/People.h	/^} Play_Pos;$/;"	t	typeref:enum:Play_Pos
-Player	include/core/People.h	/^	Player() {$/;"	f	class:Player
+Player	include/core/People.h	/^	Player(Bas_Atr b, Phy_Atr p, Men_Atr m, Tec_Atr t, Kee_Atr k, Play_Pos pos)$/;"	f	class:Player
 Player	include/core/People.h	/^class Player : public People {$/;"	c
-PlayerStatus	include/core/RealStatus.h	/^		PlayerStatus(Player& pl, Position& ps, Speed& sp) : player(pl), position(ps), speed(sp){$/;"	f	class:PlayerStatus
+PlayerStatus	include/core/RealStatus.h	/^		PlayerStatus(Player& pl, Position ps, Speed sp) : player(pl), position(ps), speed(sp){$/;"	f	class:PlayerStatus
 PlayerStatus	include/core/RealStatus.h	/^class PlayerStatus : public Status$/;"	c
-Position	include/core/Position.h	/^		Position(uint32_t x, uint32_t y, bool down): x(x), y(y), is_down(down){$/;"	f	class:Position
+Position	include/core/Position.h	/^		Position(uint32_t x, uint32_t y, bool is_down): x(x), y(y), is_down(is_down){$/;"	f	class:Position
 Position	include/core/Position.h	/^class Position$/;"	c
-RealStatus	include/core/RealStatus.h	/^		RealStatus(std::vector<PlayerStatus>* pl, std::vector<KeeperStatus>* kp, BallStatus* bl) : player(pl), keeper(kp), ball(bl){$/;"	f	class:RealStatus
+RealStatus	include/core/RealStatus.h	/^		RealStatus(std::vector<Status> &pl, BallStatus &bl, TacticsInfo &ti_up,$/;"	f	class:RealStatus
 RealStatus	include/core/RealStatus.h	/^class RealStatus$/;"	c
 SRC	Define.mk	/^SRC=$(HOME)\/src$/;"	m
 ST	include/core/People.h	/^	ST,$/;"	e	enum:Play_Pos
@@ -93,9 +91,9 @@ STEAL_DIS	include/core/comm.h	/^const uint32_t  STEAL_DIS = 3;	\/\/ the value de
 Shoot_More	include/core/RealStatus.h	/^		Shoot_More, \/\/ shoot at any chance$/;"	e	enum:TacticsInfo::Detail
 Short_Pass	include/core/RealStatus.h	/^		Short_Pass, \/\/ short pass penetration$/;"	e	enum:TacticsInfo::Detail
 Slide_Pass	include/core/RealStatus.h	/^		Slide_Pass,\/\/ pass ball to the middle from the side$/;"	e	enum:TacticsInfo::Detail
-Speed	include/core/Position.h	/^		Speed(){}$/;"	f	class:Speed
+Speed	include/core/Position.h	/^		Speed(uint32_t x_speed, uint32_t y_speed):x_speed(x_speed), y_speed(y_speed){}$/;"	f	class:Speed
 Speed	include/core/Position.h	/^class Speed$/;"	c
-Status	include/core/RealStatus.h	/^		Status(){}$/;"	f	class:Status
+Status	include/core/RealStatus.h	/^		Status(Position p, Speed s):position(p),speed(s){}$/;"	f	class:Status
 Status	include/core/RealStatus.h	/^class Status$/;"	c
 StatusInfo	include/core/RealStatus.h	/^typedef	struct StatusInfo$/;"	s
 StatusInfo	include/core/RealStatus.h	/^}	StatusInfo;$/;"	t	typeref:struct:StatusInfo
@@ -117,24 +115,23 @@ __PEOPLE__H__	include/core/People.h	2;"	d
 __POSITION__H__	include/core/Position.h	2;"	d
 __REALSTATUS__H__	include/core/RealStatus.h	2;"	d
 acceleration	include/core/People.h	/^	uint32_t acceleration;	\/\/ can speed in a short time$/;"	m	struct:Phy_Atr
-age	include/core/People.h	/^	uint32_t age;$/;"	m	class:People
+age	include/core/People.h	/^	uint32_t age;$/;"	m	struct:Bas_Atr
 air_control	include/core/People.h	/^	uint32_t air_control;	\/\/ contral the air$/;"	m	struct:Kee_Atr
 around_boys	include/core/RealStatus.h	/^	uint32_t around_boys[NUM_BOYS]; $/;"	m	struct:StatusInfo
 ball	include/core/RealStatus.h	/^		Ball ball;$/;"	m	class:BallStatus
 ball	include/core/RealStatus.h	/^		BallStatus	 &ball;	  \/\/ one ball$/;"	m	class:RealStatus
-ball_x	src/RealStatus.cc	/^	int ball_x = ball.position.get_x();$/;"	v
-ball_y	src/RealStatus.cc	/^	int ball_y = ball.position.get_y();$/;"	v
+ball_x	src/RealStatus.cc	/^	int ball_x = ball.getPositionX();$/;"	v
+ball_y	src/RealStatus.cc	/^	int ball_y = ball.getPositionY();$/;"	v
+bas_atr	include/core/People.h	/^		Bas_Atr bas_atr;$/;"	m	class:People
 bravery	include/core/People.h	/^	uint32_t bravery;$/;"	m	struct:Men_Atr
 cat	src/mystdio.c	/^void cat(void)$/;"	f
 cat_buf	src/mystdio.c	/^void cat_buf(int buffersize)$/;"	f
-catch_ball	include/core/RealStatus.h	/^		bool	catch_ball;$/;"	m	class:KeeperStatus
-catch_ball	include/core/RealStatus.h	/^		bool	catch_ball;$/;"	m	class:PlayerStatus
 catch_boy	include/core/RealStatus.h	/^		uint32_t	catch_boy; \/\/ only valid when BallControl is true$/;"	m	class:RealStatus
 command	include/core/People.h	/^	uint32_t command;	\/\/ command for the defence$/;"	m	struct:Kee_Atr
 concentration	include/core/People.h	/^	uint32_t concentration;$/;"	m	struct:Men_Atr
 corner	include/core/RealStatus.h	/^		bool corner;$/;"	m	class:RealStatus
 corners	include/core/People.h	/^	uint32_t corners;$/;"	m	struct:Tec_Atr
-country_id	include/core/People.h	/^	uint32_t country_id;$/;"	m	class:People
+country_id	include/core/People.h	/^	uint32_t country_id;$/;"	m	struct:Bas_Atr
 creativity	include/core/People.h	/^	uint32_t creativity;$/;"	m	struct:Men_Atr
 crossing	include/core/People.h	/^	uint32_t crossing;$/;"	m	struct:Tec_Atr
 detail	include/core/RealStatus.h	/^	} detail;$/;"	m	struct:TacticsInfo	typeref:enum:TacticsInfo::Detail
@@ -147,6 +144,23 @@ dribbling	include/core/People.h	/^	uint32_t dribbling;	\/\/ run with the ball$/;
 err_sys	include/unix/apue.h	7;"	d
 finishing	include/core/People.h	/^	uint32_t finishing;$/;"	m	struct:Tec_Atr
 free_kick	include/core/People.h	/^	uint32_t free_kick;$/;"	m	struct:Tec_Atr
+getBall	src/RealStatus.cc	/^Ball BallStatus::getBall(){$/;"	f	class:BallStatus
+getKee_Atr	src/People.cc	/^Kee_Atr Player::getKee_Atr(){$/;"	f	class:Player
+getMen_Atr	src/People.cc	/^Men_Atr Player::getMen_Atr(){$/;"	f	class:Player
+getPhy_Atr	src/People.cc	/^Phy_Atr Player::getPhy_Atr(){$/;"	f	class:Player
+getPlayer	src/RealStatus.cc	/^Player PlayerStatus::getPlayer(){$/;"	f	class:PlayerStatus
+getPlayerKee_Atr	src/RealStatus.cc	/^Kee_Atr PlayerStatus::getPlayerKee_Atr(){$/;"	f	class:PlayerStatus
+getPlayerMen_Atr	src/RealStatus.cc	/^Men_Atr PlayerStatus::getPlayerMen_Atr(){$/;"	f	class:PlayerStatus
+getPlayerPhy_Atr	src/RealStatus.cc	/^Phy_Atr PlayerStatus::getPlayerPhy_Atr(){$/;"	f	class:PlayerStatus
+getPlayerTec_Atr	src/RealStatus.cc	/^Tec_Atr PlayerStatus::getPlayerTec_Atr(){$/;"	f	class:PlayerStatus
+getPosition	src/RealStatus.cc	/^Position Status::getPosition(){$/;"	f	class:Status
+getPositionIs_corner	src/RealStatus.cc	/^bool Status::getPositionIs_corner(){$/;"	f	class:Status
+getPositionIs_goal	src/RealStatus.cc	/^bool Status::getPositionIs_goal(){$/;"	f	class:Status
+getPositionIs_outside	src/RealStatus.cc	/^bool Status::getPositionIs_outside(){$/;"	f	class:Status
+getPositionX	src/RealStatus.cc	/^uint32_t Status::getPositionX(){$/;"	f	class:Status
+getPositionY	src/RealStatus.cc	/^uint32_t Status::getPositionY(){$/;"	f	class:Status
+getSpeed	src/RealStatus.cc	/^Speed Status::getSpeed(){$/;"	f	class:Status
+getTec_Atr	src/People.cc	/^Tec_Atr Player::getTec_Atr(){$/;"	f	class:Player
 get_x	src/Position.cc	/^uint32_t Position::get_x() const$/;"	f	class:Position
 get_x_speed	src/Position.cc	/^uint32_t Speed::get_x_speed()$/;"	f	class:Speed
 get_y	src/Position.cc	/^uint32_t Position::get_y() const$/;"	f	class:Position
@@ -155,24 +169,24 @@ ghello	src/ghello.c	/^void ghello(int argc, char** argv)$/;"	f
 handing	include/core/People.h	/^	uint32_t handing;	\/\/ keep the goal in the hands$/;"	m	struct:Kee_Atr
 heading	include/core/People.h	/^	uint32_t heading;$/;"	m	struct:Tec_Atr
 health	include/core/People.h	/^	uint32_t health;	\/\/ health firness$/;"	m	struct:Phy_Atr
-height	include/core/People.h	/^	uint32_t height;	\/\/ cm $/;"	m	class:People
+height	include/core/People.h	/^	uint32_t height;	\/\/ cm $/;"	m	struct:Bas_Atr
 in_penalty_area	src/Position.cc	/^bool Position::in_penalty_area()$/;"	f	class:Position
 influence	include/core/People.h	/^	uint32_t influence;$/;"	m	struct:Men_Atr
 init	src/ghello.c	/^void init()$/;"	f
+init_ball	include/core/RealStatus.h	/^		Position init_ball;$/;"	m	class:RealStatus
+init_position	include/core/RealStatus.h	/^		vector<Position> init_position;$/;"	m	class:RealStatus
 is_corner	src/Position.cc	/^bool Position::is_corner()$/;"	f	class:Position
-is_down	include/core/Position.h	/^		bool 	is_down; \/\/ down == ture , the player is belonged to the down, others, up$/;"	m	class:Position
+is_down	include/core/Position.h	/^		bool is_down;$/;"	m	class:Position
 is_goal	src/Position.cc	/^bool Position::is_goal()$/;"	f	class:Position
 is_outside	src/Position.cc	/^bool Position::is_outside()$/;"	f	class:Position
 judge	include/core/People.h	/^	uint32_t judge;$/;"	m	struct:Men_Atr
 jump	include/core/People.h	/^	uint32_t jump;$/;"	m	struct:Phy_Atr
-kee_atr	include/core/People.h	/^	Kee_Atr kee_atr;$/;"	m	class:Keeper
-keeper	include/core/RealStatus.h	/^		Keeper &keeper;$/;"	m	class:KeeperStatus
-kicked	include/core/RealStatus.h	/^		Kicked kicked;$/;"	m	class:BallStatus
+kee_atr	include/core/People.h	/^	Kee_Atr kee_atr;$/;"	m	class:Player
 kicking	include/core/People.h	/^	uint32_t kicking;	\/\/ kick a long ball with foot$/;"	m	struct:Kee_Atr
 left	src/Position.cc	/^int Position::left(Position& rhs)$/;"	f	class:Position
 lineSegment	src/ghello.c	/^void lineSegment()$/;"	f
 long_shoot	include/core/People.h	/^	uint32_t long_shoot;$/;"	m	struct:Tec_Atr
-main	test/main.c	/^int main(int argc, char** argv)$/;"	f
+main	test/main.cc	/^int main(int argc, char** argv)$/;"	f
 marking	include/core/People.h	/^	uint32_t marking;$/;"	m	struct:Tec_Atr
 men_atr	include/core/People.h	/^	Men_Atr men_atr;$/;"	m	class:Player
 move	src/Position.cc	/^void Position::move(Speed& sp)$/;"	f	class:Position
@@ -182,8 +196,8 @@ outside	include/core/RealStatus.h	/^		bool outside;$/;"	m	class:RealStatus
 pace	include/core/People.h	/^	uint32_t pace;		\/\/ speed$/;"	m	struct:Phy_Atr
 passing	include/core/People.h	/^	uint32_t passing;$/;"	m	struct:Tec_Atr
 phy_atr	include/core/People.h	/^	Phy_Atr phy_atr;$/;"	m	class:Player
-pisiton	include/core/Ball.h	/^		Ball_Position pisiton;$/;"	m	class:Ball
-player	include/core/RealStatus.h	/^		Player& player;$/;"	m	class:PlayerStatus
+pisiton	include/core/Ball.h	/^		Position pisiton;$/;"	m	class:Ball
+player	include/core/RealStatus.h	/^		Player &player;$/;"	m	class:PlayerStatus
 player	include/core/RealStatus.h	/^		std::vector<Status> &player;  \/\/ 20 palyer$/;"	m	class:RealStatus
 point	include/core/People.h	/^	uint32_t point;$/;"	m	struct:Tec_Atr
 pos	include/core/People.h	/^	Play_Pos pos;   \/\/ which pos can play, $/;"	m	class:Player
@@ -195,12 +209,17 @@ right	src/Position.cc	/^int	Position::right(Position& rhs)$/;"	f	class:Position
 rush_out	include/core/People.h	/^	uint32_t rush_out;	\/\/ get out of the ...$/;"	m	struct:Kee_Atr
 scope_pos	include/core/RealStatus.h	/^Scope scope_pos[NUM_POS] = {$/;"	v
 set	src/Position.cc	/^void Speed::set(uint32_t x, uint32_t y)$/;"	f	class:Speed
+setPosition	src/RealStatus.cc	/^void Status::setPosition(uint32_t x, uint32_t y){$/;"	f	class:Status
+setPositionMove	src/RealStatus.cc	/^void Status::setPositionMove(Speed &sp){$/;"	f	class:Status
+setPositionRecover_Outside	src/RealStatus.cc	/^void Status::setPositionRecover_Outside(){$/;"	f	class:Status
+setSpeed	src/RealStatus.cc	/^void Status::setSpeed(uint32_t x, uint32_t y){$/;"	f	class:Status
 set_x	src/Position.cc	/^bool Position::set_x(uint32_t x_val)$/;"	f	class:Position
 set_y	src/Position.cc	/^bool Position::set_y(uint32_t y_val)$/;"	f	class:Position
 si	include/core/RealStatus.h	/^		StatusInfo	si;$/;"	m	class:RealStatus
 speed	include/core/Ball.h	/^		Speed	speed;$/;"	m	class:Ball
 speed	include/core/RealStatus.h	/^		Speed	speed;$/;"	m	class:Status
 stamina	include/core/People.h	/^	uint32_t stamina;	\/\/ can insist how long$/;"	m	struct:Phy_Atr
+status_comment	include/core/RealStatus.h	/^		string status_comment;$/;"	m	class:RealStatus
 strength	include/core/People.h	/^	uint32_t strength;$/;"	m	struct:Phy_Atr
 tec_atr	include/core/People.h	/^	Tec_Atr tec_atr;$/;"	m	class:Player
 throwers	include/core/People.h	/^	uint32_t throwers;$/;"	m	struct:Tec_Atr
@@ -213,7 +232,7 @@ tracking	include/core/People.h	/^	uint32_t tracking;	\/\/ get the ball from oppo
 up	src/Position.cc	/^int	Position::up(Position& rhs)$/;"	f	class:Position
 valid	include/core/RealStatus.h	/^	bool	valid;$/;"	m	struct:__anon1
 weaken	src/RealStatus.cc	/^void BallStatus::weaken(Speed& sp)$/;"	f	class:BallStatus
-weight	include/core/People.h	/^	uint32_t weight;	\/\/kg$/;"	m	class:People
+weight	include/core/People.h	/^	uint32_t weight;	\/\/kg$/;"	m	struct:Bas_Atr
 x	include/core/Position.h	/^		uint32_t x; \/\/ width offside to the 0 dot$/;"	m	class:Position
 x_speed	include/core/Position.h	/^		uint32_t x_speed;  \/\/ m \/ s$/;"	m	class:Speed
 x_speed	include/core/RealStatus.h	/^	uint32_t x_speed;$/;"	m	struct:__anon1
@@ -222,9 +241,7 @@ y_speed	include/core/Position.h	/^		uint32_t y_speed; \/\/ m\/s$/;"	m	class:Spee
 y_speed	include/core/RealStatus.h	/^	uint32_t y_speed;$/;"	m	struct:__anon1
 ~Ball	include/core/Ball.h	/^		~Ball(){$/;"	f	class:Ball
 ~BallStatus	include/core/RealStatus.h	/^		~BallStatus(){$/;"	f	class:BallStatus
-~Keeper	include/core/People.h	/^	} ~Keeper() {$/;"	f	class:Keeper
-~KeeperStatus	include/core/RealStatus.h	/^		~KeeperStatus(){$/;"	f	class:KeeperStatus
-~People	include/core/People.h	/^	} ~People() {$/;"	f	class:People
+~People	include/core/People.h	/^		~People() {}$/;"	f	class:People
 ~Player	include/core/People.h	/^	~Player() {$/;"	f	class:Player
 ~PlayerStatus	include/core/RealStatus.h	/^		~PlayerStatus(){$/;"	f	class:PlayerStatus
 ~Position	include/core/Position.h	/^		~Position(){$/;"	f	class:Position

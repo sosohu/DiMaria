@@ -13,7 +13,7 @@ const uint32_t	GATE_HIGH = 2; // real value is 2.44m
 const uint32_t	PENALTY_WIDTH = 40; 
 const uint32_t	PENALTY_LENGTH = 16;
 const uint32_t	ON_BOUNDARY = -1; 
-const uint32_t	AIR_RESISTANCE 50; // m/s
+const uint32_t	AIR_RESISTANCE = 50; // m/s
 const uint32_t	NUM_PLAYERS = 20;  // on the field , do not contain the subtution
 const uint32_t	NUM_KEEPERS = 2;
 const uint32_t	NUM_BOYS = 22;

@@ -1,8 +1,8 @@
 
 HOME=/home/sosohu/huqinghai/work/DiMaria
 CC=gcc
-CFLAGS=-O3
-CXXFLAGS=-O3
+CFLAGS=-O3 -fPIC
+CXXFLAGS=-O3 -fPIC
 AR=ar
 ARFLAGS=-r
 

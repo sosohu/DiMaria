@@ -1,19 +1,23 @@
 #ifndef __REALSTATUS__H__
 #define __REALSTATUS__H__
+#include "comm.h"
 #include "People.h"
 #include "Position.h"
+#include "Ball.h"
+#include <string>
+#include <vector>
 
 class Status
 {
 	public:
-		Status(){}
+		Status(Position p, Speed s):position(p),speed(s){}
 		virtual	~Status(){}
 		
 		virtual void NextStatus() const {}
 
 		void setPosition(uint32_t x, uint32_t y);
 
-		void setPositionMove(Speed &sp);
+		void setPositionMove(Speed sp);
 
 		void setPositionRecover_Outside();
 
@@ -40,7 +44,7 @@ class Status
 class PlayerStatus : public Status
 {
 	public:
-		PlayerStatus(Player& pl, Position& ps, Speed& sp) : player(pl), position(ps), speed(sp){
+		PlayerStatus(Player& pl, Position ps, Speed sp) : player(pl), Status(ps, sp){
 		}
 		
 		~PlayerStatus(){
@@ -93,7 +97,7 @@ typedef struct
 class BallStatus : public Status
 {
 	public:
-		BallStatus(){
+		BallStatus(Ball ball, Position p, Speed s) : ball(ball),Status(p, s){
 		}
 
 		~BallStatus(){
@@ -101,7 +105,7 @@ class BallStatus : public Status
 
 		uint32_t NextStatus();
 
-		void weaken(Speed& sp);
+		void weaken();
 
 		Ball getBall();
 
@@ -110,7 +114,7 @@ class BallStatus : public Status
 		//Kicked kicked;
 };
 
-typedef strcut	
+typedef struct	
 {
 	uint32_t	x_start;
 	uint32_t	x_end;
@@ -172,11 +176,12 @@ typedef struct TacticsInfo
 class RealStatus
 {
 	public:
-		RealStatus(std::vector<Status> &pl, BallStatus &bl, TacticsInfo &ti_up,
-					TacticsInfo &ti_down, vector<Position> &init_position,
+		RealStatus(std::vector<PlayerStatus> &pl, BallStatus &bl, 
+					TacticsInfo &ti_up,TacticsInfo &ti_down, 
+					std::vector<Position> &init_position,
 					Position &init_ball) : player(pl), ball(bl), ti_up(ti_up),
-					ti_down(ti_down), init_position(init_position, 
-					init_ball(init_ball)){
+					ti_down(ti_down), init_position(init_position), 
+					init_ball(init_ball){
 			ResetStatus();
 		}
 
@@ -191,7 +196,7 @@ class RealStatus
 		void NotifyGoal();
 
 		// reset the status after the goal.
-		void ResetStatus();
+		void ResetStatus(bool up = true);
 
 		// start corner.
 		void StartCorner();
@@ -206,7 +211,7 @@ class RealStatus
 		void ComputeStatus();
 
 		// return the comment of match by the Status.
-		string TextComment();
+		std::string TextComment();
 
 	private:
 		
@@ -219,7 +224,7 @@ class RealStatus
 		void SmartAttack(uint32_t id);
 	private:
 		// 0~9 is up side, 10~19 is down side, 20 is up keeper, 21 is down keeper
-		std::vector<Status> &player;  // 20 palyer
+		std::vector<PlayerStatus> &player;  // 20 palyer
 		//std::vector<KeeperStatus> *keeper;  // 2 keeper
 		BallStatus	 &ball;	  // one ball
 
@@ -245,9 +250,9 @@ class RealStatus
 		TacticsInfo &ti_up, &ti_down;
 
 		// record the comment of game
-		string status_comment;
+		std::string status_comment;
 		// init position
-		vector<Position> init_position;
+		std::vector<Position> init_position;
 		Position init_ball;
 };
 

@@ -4,18 +4,23 @@
 #include "comm.h"
 #include "Position.h"
 
+typedef struct
+{
+	uint32_t color;
+	uint32_t size; // r
+} Bal_Atr;
+
 class Ball
 {
 	public:
-		Ball(){
+		Ball(Bal_Atr bal_atr):bal_atr(bal_atr){
 		}
 
 		~Ball(){
 		}
 
 	private:
-		Position pisiton;
-		Speed	speed;
+		Bal_Atr bal_atr;
 };
 
 

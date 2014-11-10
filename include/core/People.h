@@ -1,19 +1,24 @@
 #ifndef __PEOPLE__H__
 #define __PEOPLE__H__
+#include "comm.h"
 
-class People {
-      public:
-	People() {
-	} ~People() {
-	}
-      private:
+// the default value range is 0 ~ 20
+typedef struct Bas_Atr {
 	uint32_t age;
 	uint32_t height;	// cm 
 	uint32_t weight;	//kg
 	uint32_t country_id;
+} Bas_Atr;
+
+class People {
+	public:
+		People(Bas_Atr b):bas_atr(b) {} 
+		~People() {}
+    private:
+		Bas_Atr bas_atr;
 };
 
-// the default value range is 0 ~ 100
+// the default value range is 0 ~ 20
 typedef struct Phy_Atr {
 	uint32_t pace;		// speed
 	uint32_t strength;
@@ -85,7 +90,8 @@ typedef enum Play_Pos
 
 class Player : public People {
       public:
-	Player() {
+	Player(Bas_Atr b, Phy_Atr p, Men_Atr m, Tec_Atr t, Kee_Atr k, Play_Pos pos)
+			:People(b),phy_atr(p),men_atr(m),tec_atr(t),kee_atr(k),pos(pos) {
 	} 
 	~Player() {
 	}
