@@ -44,7 +44,7 @@ class Status
 class PlayerStatus : public Status
 {
 	public:
-		PlayerStatus(Player& pl, Position ps, Speed sp) : player(pl), Status(ps, sp){
+		PlayerStatus(Player pl, Position ps, Speed sp) : player(pl), Status(ps, sp){
 		}
 		
 		~PlayerStatus(){
@@ -152,34 +152,38 @@ typedef	struct StatusInfo
 	uint32_t distance_ball[NUM_BOYS][2];
 }	StatusInfo;
 
+enum Tac_Total{
+	ATTACK, // attack like the Dortmund
+	DEFEND, // defend like the Chelsea
+	CONTROL // control like the FCB
+};
+
+enum Tac_Detail{
+	Slide_Pass,// pass ball to the middle from the side
+	Short_Pass, // short pass penetration
+	Shoot_More, // shoot at any chance
+	ForWard_More, // forward more to attack
+	Break_More, // break througth more
+
+	Back_More,  // pull back to defend
+	Steal_More, // more steal to defend
+	Offside_Trap // make the offside trap
+};
+
 typedef struct TacticsInfo
 {
-	enum Total{
-		ATTACK, // attack like the Dortmund
-		DEFEND, // defend like the Chelsea
-		CONTROL // control like the FCB
-	} total;
+	enum Tac_Total total;
 
-	enum Detail{
-		Slide_Pass,// pass ball to the middle from the side
-		Short_Pass, // short pass penetration
-		Shoot_More, // shoot at any chance
-		ForWard_More, // forward more to attack
-		Break_More, // break througth more
-
-		Back_More,  // pull back to defend
-		Steal_More, // more steal to defend
-		Offside_Trap // make the offside trap
-	} detail;
+	enum Tac_Detail detail;
 }	TacticsInfo;
 
 class RealStatus
 {
 	public:
-		RealStatus(std::vector<PlayerStatus> &pl, BallStatus &bl, 
-					TacticsInfo &ti_up,TacticsInfo &ti_down, 
+		RealStatus(std::vector<PlayerStatus> ps, BallStatus bs, 
+					TacticsInfo ti_up,TacticsInfo ti_down, 
 					std::vector<Position> &init_position,
-					Position &init_ball) : player(pl), ball(bl), ti_up(ti_up),
+					Position &init_ball) : player(ps), ball(bs), ti_up(ti_up),
 					ti_down(ti_down), init_position(init_position), 
 					init_ball(init_ball){
 			ResetStatus();

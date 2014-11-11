@@ -40,6 +40,12 @@ bool Position::set_y(uint32_t y_val)
 	return true;
 }
 
+bool Position::set_side(bool up)
+{
+	is_down = !up;
+	return true;
+}
+
 bool Position::is_corner()
 {
 	if(y < 0 || y > FIELD_LENGTH)

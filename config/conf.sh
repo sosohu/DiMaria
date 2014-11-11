@@ -1,4 +1,4 @@
 
 PHOME=`pwd`
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PHOME/lib
+export LD_LIBRARY_PATH=$PHOME/lib

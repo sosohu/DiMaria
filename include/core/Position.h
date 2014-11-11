@@ -41,6 +41,8 @@ class Position
 
 		bool set_y(uint32_t	x);
 
+		bool set_side(bool up);
+
 		bool is_corner();
 
 		// tell the ball whether is outside.
