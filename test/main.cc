@@ -27,7 +27,6 @@ bool spliteAtr(std::string &data, Bas_Atr &ba, Phy_Atr &pa, Men_Atr &ma,
 		pos++;
 		start = pos;
 	}
-	PRINT_MSG("%d", index);
 	assert(index == NUM_ATR);
 	std::vector<std::string>::iterator it_start;
 	std::vector<std::string>::iterator it_end;
@@ -46,7 +45,8 @@ bool spliteAtr(std::string &data, Bas_Atr &ba, Phy_Atr &pa, Men_Atr &ma,
 	for(uint32_t i = 0; i < 13; i++)
 		it_start++;
 	ka.setValue(std::vector<std::string>(it_start, it_end), 8);
-	setPlay_Pos(pp, *it_end);
+	setPlay_Pos(pp, *it_start);
+	PRINT_MSG("PASS");
 }
 
 void Init_Position(std::vector<Position> &init_position, Position &init_ball){
@@ -151,12 +151,14 @@ int main(int argc, char** argv)
 	char data[ATR_MAX_LEN];
 	file.getline(data, ATR_MAX_LEN);
 
+
 	std::string tmp = data;
 	spliteAtr(tmp, ba, pa, ma, ta, ka, pp);
 
+
 	// prepare for RealStatus object
-	std::vector<Player> players(20, Player(ba, pa, ma, ta, ka, pp));
-	std::vector<Position> init_position(22, Position(0,0,true));
+	std::vector<Player> players(NUM_BOYS, Player(ba, pa, ma, ta, ka, pp));
+	std::vector<Position> init_position(NUM_BOYS, Position(0,0,true));
 	Bal_Atr bal_atr = {0xc1, 0x01}; // blue, middle
 	Ball ball(bal_atr);
 	Position init_ball(0,0,true);
@@ -167,6 +169,7 @@ int main(int argc, char** argv)
 	for(uint32_t i = 0; i < NUM_BOYS; i++){
 		ps.push_back(PlayerStatus(players[i], init_position[i], sp));
 	}
+	PRINT_MSG("PASS");
 	BallStatus bs(ball, init_ball, sp);
 
 	TacticsInfo ti_up = {ATTACK, ForWard_More};
