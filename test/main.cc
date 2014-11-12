@@ -46,7 +46,7 @@ bool spliteAtr(std::string &data, Bas_Atr &ba, Phy_Atr &pa, Men_Atr &ma,
 		it_start++;
 	ka.setValue(std::vector<std::string>(it_start, it_end), 8);
 	setPlay_Pos(pp, *it_start);
-	PRINT_MSG("PASS");
+	//PRINT_MSG("PASS");
 }
 
 void Init_Position(std::vector<Position> &init_position, Position &init_ball){
@@ -169,7 +169,6 @@ int main(int argc, char** argv)
 	for(uint32_t i = 0; i < NUM_BOYS; i++){
 		ps.push_back(PlayerStatus(players[i], init_position[i], sp));
 	}
-	PRINT_MSG("PASS");
 	BallStatus bs(ball, init_ball, sp);
 
 	TacticsInfo ti_up = {ATTACK, ForWard_More};
@@ -182,6 +181,8 @@ int main(int argc, char** argv)
 	while(ret != OVER_STATUS){
 		ret = rl.NextStatus();
 		std::cout<<rl.TextComment()<<std::endl;
+		//std::cout<<"ball position: "<<rl.getBallStatus().getPositionX()<<" , "
+		//		<<rl.getBallStatus().getPositionY()<<std::endl;
 	}
 	
 	return 0;

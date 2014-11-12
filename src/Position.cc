@@ -2,39 +2,39 @@
 #include <math.h>
 #include <stddef.h>
 
-void Speed::set(uint32_t x, uint32_t y)
+void Speed::set(int32_t x, int32_t y)
 {
 		x_speed = x;
 		y_speed = y;
 }
 
-uint32_t Speed::get_x_speed()
+int32_t Speed::get_x_speed()
 {
 		return	x_speed;
 }
 
-uint32_t Speed::get_y_speed()
+int32_t Speed::get_y_speed()
 {
 		return	y_speed;
 }
 
-uint32_t Position::get_x() const
+int32_t Position::get_x() const
 {
 	return x;
 }
 
-uint32_t Position::get_y() const
+int32_t Position::get_y() const
 {
 	return y;
 }
 
-bool Position::set_x(uint32_t x_val)
+bool Position::set_x(int32_t x_val)
 {
 	x = x_val;
 	return true;
 }
 
-bool Position::set_y(uint32_t y_val)
+bool Position::set_y(int32_t y_val)
 {
 	y = y_val;
 	return true;
@@ -154,7 +154,7 @@ bool Position::in_penalty_area()
 	}
 }				// penalty area size is 40*16
 
-uint32_t Position::distance(const Position & other)
+int32_t Position::distance(const Position & other)
 {
 	return sqrt((x - other.get_x()) * (x - other.get_x()) +
 		    (y - other.get_y()) * (y - other.get_y()));

@@ -15,19 +15,19 @@ class Status
 		
 		virtual void NextStatus() const {}
 
-		void setPosition(uint32_t x, uint32_t y);
+		void setPosition(int32_t x, int32_t y);
 
 		void setPositionMove(Speed sp);
 
 		void setPositionRecover_Outside();
 
-		void setSpeed(uint32_t x, uint32_t y);
+		void setSpeed(int32_t x, int32_t y);
 
 		Position getPosition();
 
-		uint32_t getPositionX();
+		int32_t getPositionX();
 
-		uint32_t getPositionY();
+		int32_t getPositionY();
 
 		bool getPositionIs_goal();
 
@@ -89,8 +89,8 @@ class KeeperStatus : public Status
 
 typedef struct
 {
-	uint32_t x_speed;
-	uint32_t y_speed;
+	int32_t x_speed;
+	int32_t y_speed;
 	bool	valid;
 }	Kicked;
 
@@ -103,7 +103,7 @@ class BallStatus : public Status
 		~BallStatus(){
 		}
 
-		uint32_t NextStatus();
+		int32_t NextStatus();
 
 		void weaken();
 
@@ -116,10 +116,10 @@ class BallStatus : public Status
 
 typedef struct	
 {
-	uint32_t	x_start;
-	uint32_t	x_end;
-	uint32_t	y_start;
-	uint32_t	y_end;
+	int32_t	x_start;
+	int32_t	x_end;
+	int32_t	y_start;
+	int32_t	y_end;
 }	Scope;
 
 Scope scope_pos[NUM_POS] = {
@@ -142,14 +142,14 @@ Scope scope_pos[NUM_POS] = {
 typedef	struct StatusInfo
 {
 	// distance of each two boys,the 3rd dim declares x diraction and y diraction 
-	uint32_t distance_boy[NUM_BOYS][NUM_BOYS][2]; 
+	int32_t distance_boy[NUM_BOYS][NUM_BOYS][2]; 
 	/* the value declares the num of opposide's plyer who is around(3 m X 3 m)
 	   the value equal 0 means the boy is freedom */
-	uint32_t around_boys[NUM_BOYS]; 
+	int32_t around_boys[NUM_BOYS]; 
 	// distance of boys and opposide's gate with x distance and y distance
-	uint32_t distance_gate[NUM_BOYS][2];
+	int32_t distance_gate[NUM_BOYS][2];
 	// distance of boys and ball with x distance and y distance
-	uint32_t distance_ball[NUM_BOYS][2];
+	int32_t distance_ball[NUM_BOYS][2];
 }	StatusInfo;
 
 enum Tac_Total{
@@ -194,7 +194,7 @@ class RealStatus
 		}
 
 		// next status, core func and have the effect on the game.
-		uint32_t NextStatus();
+		int32_t NextStatus();
 
 		// when the goal, notify.
 		void NotifyGoal();
@@ -217,20 +217,23 @@ class RealStatus
 		// return the comment of match by the Status.
 		std::string TextComment();
 
+		// return BallStatus
+		BallStatus getBallStatus();
+
 	private:
 		
 		// id is player/keeper's id who catch the ball
-		void SmartSelect(uint32_t id);
+		void SmartSelect(int32_t id);
 
 		//	
-		void SmartDefend(uint32_t id);
+		void SmartDefend(int32_t id);
 
-		void SmartAttack(uint32_t id);
+		void SmartAttack(int32_t id);
 	private:
 		// 0~9 is up side, 10~19 is down side, 20 is up keeper, 21 is down keeper
-		std::vector<PlayerStatus> &player;  // 20 palyer
+		std::vector<PlayerStatus> player;  // 20 palyer
 		//std::vector<KeeperStatus> *keeper;  // 2 keeper
-		BallStatus	 &ball;	  // one ball
+		BallStatus	 ball;	  // one ball
 
 		bool	BallControl;  // when is ture, the ball is catched by one boy
 		/* 
@@ -238,7 +241,7 @@ class RealStatus
 			10 ~ 19 is the down side's player, 20 is the up side's keeper and 21
 			is the down side's keeper
 		*/
-		uint32_t	catch_boy; // only valid when BallControl is true
+		int32_t	catch_boy; // only valid when BallControl is true
 
 		/* the ball is outside and turn to the outside ball status
 			judge the position by the ball's position

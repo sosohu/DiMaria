@@ -6,8 +6,8 @@
 
 typedef struct
 {
-	uint32_t color;
-	uint32_t size; // r
+	int32_t color;
+	int32_t size; // r
 } Bal_Atr;
 
 class Ball

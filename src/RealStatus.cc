@@ -1,7 +1,9 @@
 #include "RealStatus.h"
+#include "Conversion.h"
+#include "print.h"
 #include <cmath>
 
-void Status::setPosition(uint32_t x, uint32_t y){
+void Status::setPosition(int32_t x, int32_t y){
 	position.set_x(x);
 	position.set_y(y);
 }
@@ -14,7 +16,7 @@ void Status::setPositionRecover_Outside(){
 	position.recover_outside();
 }
 
-void Status::setSpeed(uint32_t x, uint32_t y){
+void Status::setSpeed(int32_t x, int32_t y){
 	speed.set(x, y);
 }
 
@@ -22,11 +24,11 @@ Position Status::getPosition(){
 	return position;
 }
 
-uint32_t Status::getPositionX(){
+int32_t Status::getPositionX(){
 	return position.get_x();
 }
 
-uint32_t Status::getPositionY(){
+int32_t Status::getPositionY(){
 	return position.get_y();
 }
 
@@ -47,7 +49,7 @@ Speed Status::getSpeed(){
 }
 
 // ball fly by the speed
-uint32_t BallStatus::NextStatus()
+int32_t BallStatus::NextStatus()
 {	
 	//default
 }
@@ -55,8 +57,9 @@ uint32_t BallStatus::NextStatus()
 void BallStatus::weaken()
 {
 	Speed sp = getSpeed();
-	uint32_t x = sp.get_x_speed();
-	uint32_t y = sp.get_y_speed();
+	int32_t x = sp.get_x_speed();
+	int32_t y = sp.get_y_speed();
+	PRINT_MSG("%d, %d", x, y);
 
 	if(x > 0)
 		x = x > AIR_RESISTANCE? x - AIR_RESISTANCE : 0;
@@ -114,11 +117,11 @@ Player KeeperStatus::getPlayer(){
 
 void RealStatus::ComputeStatus()
 {
-	uint32_t len = player.size();
+	int32_t len = player.size();
 	// compute the distance_boy
 	// for player to player
-	for(uint32_t i = 0; i < len -1; i++){
-		for(uint32_t j = i + 1; j < len; j++){
+	for(int32_t i = 0; i < len -1; i++){
+		for(int32_t j = i + 1; j < len; j++){
 			si.distance_boy[i][j][0] = player[j].getPositionX() 
 										- player[i].getPositionX(); 
 			si.distance_boy[i][j][1] = player[j].getPositionY() 
@@ -128,7 +131,7 @@ void RealStatus::ComputeStatus()
 		}
 	}
 	// for keeper to palyer
-	for(uint32_t i = 0; i < len; i++){
+	for(int32_t i = 0; i < len; i++){
 		si.distance_boy[20][i][0] = player[i].getPositionX()
 									- player[20].getPositionX();
 		si.distance_boy[20][i][1] = player[i].getPositionY()
@@ -152,11 +155,11 @@ void RealStatus::ComputeStatus()
 	si.distance_boy[21][20][1] = -si.distance_boy[20][21][1];
 
 	// compute the around_boys
-	for(uint32_t i = 0; i < 10; i++){
+	for(int32_t i = 0; i < 10; i++){
 		si.around_boys[i]	=	0;
 		si.around_boys[i + 10]	=	0;
 		// player to player
-		for(uint32_t j = 10; j < 20; j++){
+		for(int32_t j = 10; j < 20; j++){
 				if(	(std::abs(si.distance_boy[i][j][0]) <= FREE_DIS) ||
 					(std::abs(si.distance_boy[i][j][1]) <= FREE_DIS) ){
 					si.around_boys[i]++;
@@ -179,14 +182,14 @@ void RealStatus::ComputeStatus()
 
 	// compute the distance to the offside 's gate
 	// for up side
-	for(uint32_t i = 0; i < 10; i++){
+	for(int32_t i = 0; i < 10; i++){
 		si.distance_gate[i][0] = FIELD_WIDTH/2 - player[i].getPositionX();	
 		si.distance_gate[i][1] = player[i].getPositionY();	
 	}
 	si.distance_gate[20][0] = FIELD_WIDTH/2 - player[20].getPositionX();
 	si.distance_gate[20][1] = player[20].getPositionY();	
 	// for down side
-	for(uint32_t i = 10; i < 20; i++){
+	for(int32_t i = 10; i < 20; i++){
 		si.distance_gate[i][0] = FIELD_WIDTH/2 - player[i].getPositionX();	
 		si.distance_gate[i][1] = FIELD_LENGTH - player[i].getPositionY();	
 	}
@@ -195,14 +198,14 @@ void RealStatus::ComputeStatus()
 	// compute the distance to the ball
 	int ball_x = ball.getPositionX();
 	int ball_y = ball.getPositionY();
-	for(uint32_t i = 0; i < NUM_BOYS; i++){
+	for(int32_t i = 0; i < NUM_BOYS; i++){
 		si.distance_ball[i][0] = ball_x - player[i].getPositionX();
 		si.distance_ball[i][1] = ball_y - player[i].getPositionY();
 	}
 
 	// compute wheather the ball is controled and who control it
 	BallControl = false;
-	for(uint32_t i = 0; i< NUM_BOYS; i++){
+	for(int32_t i = 0; i< NUM_BOYS; i++){
 		if(si.distance_ball[i][0] == 0 && si.distance_ball[i][1] == 0){
 			BallControl = true;
 			catch_boy = i;
@@ -232,8 +235,12 @@ void RealStatus::ComputeStatus()
 	(3)	others
 		do nothing, just stand on his position.			
 */
-uint32_t RealStatus::NextStatus()
+int32_t RealStatus::NextStatus()
 {				
+	ball.setPositionMove(ball.getSpeed());
+	ball.weaken();
+	PRINT_MSG("ball position: %d %d",ball.getPositionX(), ball.getPositionY());
+	PRINT_MSG("ball speed: %d %d",ball.getSpeed().get_x_speed(), ball.getSpeed().get_y_speed());
 	ComputeStatus(); // compute the StatusInfo	
 	if(BallControl){
 		// for catch boy
@@ -242,9 +249,9 @@ uint32_t RealStatus::NextStatus()
 		SmartDefend(catch_boy);
 		return CON_STATUS;
 	}else{
-		uint32_t ret = 0;
-		ball.setPositionMove(ball.getSpeed());
-		ball.weaken();
+		int32_t ret = 0;
+		//ball.setPositionMove(ball.getSpeed());
+		//ball.weaken();
 
 		if(ball.getPositionIs_goal()){
 			ret = GOAL_STATUS;
@@ -263,7 +270,8 @@ uint32_t RealStatus::NextStatus()
 			case CORNER_STATUS: status_comment = "We are the corner."; break;
 			case OUT_STATUS: status_comment = "The goal is outside."; break;
 			case GOAL_STATUS: status_comment = "Goooooooooal!!!!!"; break;
-			default:	;
+			default: return CON_STATUS;
+			//default: status_comment = "continue...";	return CON_STATUS;
 		}
 		//return ret;
 		return OVER_STATUS; // version 0.0.1, only one round.
@@ -271,7 +279,7 @@ uint32_t RealStatus::NextStatus()
 }
 
 // id is player/keeper's id who catch the ball
-void RealStatus::SmartSelect(uint32_t id) 
+void RealStatus::SmartSelect(int32_t id) 
 {
 	bool up = id < 10? true : false;
 	if(id == 20)	up = true;
@@ -332,9 +340,9 @@ void RealStatus::SmartSelect(uint32_t id)
 		// if pass forward
 		if(pass_decision == 0)
 		{
-			int start = up ? 0 : 10;
-			int index = -1 , count = 11;
-			for(uint32_t i = start; i < start + 10; i++){
+			int32_t start = up ? 0 : 10;
+			int32_t index = -1 , count = 11;
+			for(int32_t i = start; i < start + 10; i++){
 				if(i != id){ 
 					if(start == 10 && player[i].getPositionY() > posy){
 						if(si.around_boys[i] < count){
@@ -350,12 +358,18 @@ void RealStatus::SmartSelect(uint32_t id)
 					}
 				}
 			}
-			int strength = player[id].getPlayerPhy_Atr().strength;
-			int speed = strength; // 1 ~ 20 m/s
-			ball.setSpeed( si.distance_boy[id][index][0] * speed 
-									/ si.distance_boy[id][index][1], speed);
+			int32_t strength = player[id].getPlayerPhy_Atr().strength;
+			int32_t speed = strength; // 1 ~ 20 m/s
+			int32_t sign_x = 1, sign_y = 1;			
+			if(si.distance_boy[id][index][0] < 0)	sign_x = -1;
+			if(si.distance_boy[id][index][1] < 0)	sign_y = -1;
+
+			ball.setSpeed( sign_x*abs(si.distance_boy[id][index][0]) * speed 
+									/ abs(si.distance_boy[id][index][1]), sign_y*speed);
 			BallControl = false;
-			status_comment = "He is passing forward !";
+			//status_comment = "He is passing forward !";
+			status_comment = Int2Str(id) + " is passing forward to " + 
+							Int2Str(index) + " by the speed of " + Int2Str(speed) + " !";
 			return;
 		}
 		// if pass back
@@ -363,7 +377,7 @@ void RealStatus::SmartSelect(uint32_t id)
 		{
 			int start = up ? 0 : 10;
 			int index = -1 , count = 11;
-			for(uint32_t i = start; i < start + 10; i++){
+			for(int32_t i = start; i < start + 10; i++){
 				if(i != id){ 
 					if(start == 10 && player[i].getPositionY() < posy){
 						if(si.around_boys[i] < count){
@@ -396,11 +410,11 @@ void RealStatus::SmartSelect(uint32_t id)
 }
 
 //	
-void RealStatus::SmartDefend(uint32_t id){
+void RealStatus::SmartDefend(int32_t id){
 	int start = id < 10? 10 : 0;
 	if(id == 20)	start = 10;
 	int min = FIELD_LENGTH, index, cur;
-	for(uint32_t i = start; i < start + 10; i++){
+	for(int32_t i = start; i < start + 10; i++){
 		if((cur = sqrt(si.distance_boy[i][id][0]*si.distance_boy[i][id][0]
 				+ si.distance_boy[i][id][1]*si.distance_boy[i][id][1])) < min){
 			min = cur;
@@ -418,7 +432,7 @@ void RealStatus::SmartDefend(uint32_t id){
 	}
 }
 
-void RealStatus::SmartAttack(uint32_t id){
+void RealStatus::SmartAttack(int32_t id){
 	//default
 }
 
@@ -430,7 +444,7 @@ void RealStatus::NotifyGoal(){
 // reset the status after the goal.
 void RealStatus::ResetStatus(bool up){
 	// reset player
-	for(uint32_t i = 0; i < NUM_BOYS; i++){
+	for(int32_t i = 0; i < NUM_BOYS; i++){
 		player[i].setPosition(init_position[i].get_x(), init_position[i].get_y());
 		player[i].setSpeed(0, 0);
 	}
@@ -465,4 +479,8 @@ void RealStatus::StartOutside(){
 // return the comment of match by the Status.
 std::string RealStatus::TextComment(){
 	return status_comment;
+}
+
+BallStatus RealStatus::getBallStatus(){
+	return ball;
 }
