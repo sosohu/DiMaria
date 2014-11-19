@@ -14,7 +14,7 @@ typedef struct Bas_Atr {
 	int32_t age;
 	int32_t height;	// cm 
 	int32_t weight;	//kg
-	std::string country_id;
+	std::string country;
 	//
 	void setValue(std::vector<std::string> data, int32_t num){
 		char *end;
@@ -25,7 +25,7 @@ typedef struct Bas_Atr {
 		age = static_cast<int32_t>(strtol(data[2].c_str(),&end,10));
 		height = static_cast<int32_t>(strtol(data[3].c_str(), &end, 10));
 		weight = static_cast<int32_t>(strtol(data[4].c_str(), &end, 10));
-		country_id = data[5];
+		country = data[5];
 	}
 } Bas_Atr;
 

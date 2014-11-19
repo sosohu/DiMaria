@@ -409,7 +409,7 @@ void RealStatus::SmartSelect(int32_t id)
 	}
 }
 
-//	
+// smart choose for the attack side player
 void RealStatus::SmartDefend(int32_t id){
 	int start = id < 10? 10 : 0;
 	if(id == 20)	start = 10;
@@ -432,6 +432,7 @@ void RealStatus::SmartDefend(int32_t id){
 	}
 }
 
+// smart choose for the attack side player
 void RealStatus::SmartAttack(int32_t id){
 	//default
 }
