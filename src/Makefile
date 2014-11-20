@@ -1,6 +1,6 @@
 include $(HOME)/Define.mk
 
-IINC=-I$(INC)/core -I$(INC)/graph -I$(INC)/unix -I$(INC)/io
+IINC=-I$(INC)/core -I$(INC)/graph -I$(INC)/unix -I$(INC)/io -I$(INC)/base
 
 OBJS= $(patsubst %.c,%.o,$(wildcard *.c))
 OBJS+= $(patsubst %.cc,%.o,$(wildcard *.cc))

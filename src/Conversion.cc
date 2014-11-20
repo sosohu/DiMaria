@@ -12,3 +12,7 @@ int32_t Str2Int(std::string str){
 	int32_t ret = static_cast<int32_t>(strtol(str.c_str(), &end, 10));
 	return ret;
 }
+
+const char* Str2Chr(std::string str){
+	return str.c_str();
+}

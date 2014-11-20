@@ -1,6 +1,7 @@
 #include "RealStatus.h"
 #include "Conversion.h"
 #include "print.h"
+#include "mmath.h"
 #include <cmath>
 
 void Status::setPosition(int32_t x, int32_t y){
@@ -244,7 +245,9 @@ int32_t RealStatus::NextStatus()
 	ComputeStatus(); // compute the StatusInfo	
 	if(BallControl){
 		// for catch boy
-		SmartSelect(catch_boy);
+		SmartCatch(catch_boy);
+		// for forward boy
+		SmartAttack(catch_boy);
 		// for steal boy
 		SmartDefend(catch_boy);
 		return CON_STATUS;
@@ -270,7 +273,7 @@ int32_t RealStatus::NextStatus()
 			case CORNER_STATUS: status_comment = "We are the corner."; break;
 			case OUT_STATUS: status_comment = "The goal is outside."; break;
 			case GOAL_STATUS: status_comment = "Goooooooooal!!!!!"; break;
-			default: return CON_STATUS;
+			default: SmartAttack(catch_boy); return CON_STATUS;
 			//default: status_comment = "continue...";	return CON_STATUS;
 		}
 		//return ret;
@@ -278,134 +281,75 @@ int32_t RealStatus::NextStatus()
 	}
 }
 
-// id is player/keeper's id who catch the ball
-void RealStatus::SmartSelect(int32_t id) 
-{
+int32_t RealStatus::SmartSelect(int32_t id){
 	bool up = id < 10? true : false;
 	if(id == 20)	up = true;
 	int posx = player[id].getPositionX();
 	int posy = player[id].getPositionY();
 	// compute every reason the make the decision
 	TacticsInfo &ti = up? ti_up : ti_down;
-	int decision = 0; // 0 is shoot, 1 is siege , 2 is pass and 3 is dribbling
+	int decision = 0; 
 	if((up && posy > FIELD_LENGTH/2) || (!up && posy < FIELD_LENGTH/2)){
 		// attack field
-		if((ti.detail == 2 && std::abs(si.distance_gate[id][1]) < FIELD_LENGTH/3)
+		if((ti.detail == Shoot_More && std::abs(si.distance_gate[id][1]) < FIELD_LENGTH/3)
 			|| (std::abs(si.distance_gate[id][0]) < FIELD_WIDTH/4 && std::abs(si.distance_gate[id][1]) < FIELD_LENGTH / 4 )){ 
 			// shoot more
-			decision = 0;	
+			decision = SHOOT_CHOOSE;	
 		}else{
-			if(ti.detail == 4)
-				decision = 3;
+			if(ti.detail == Break_More)
+				decision = DRI_CHOOSE;
 			else
-				decision = 2;
+				decision = PASS_CHOOSE;
 		}
 	}else{
 		// defend field
-		if(ti.total == 1 && std::abs(si.distance_gate[id][1] < FIELD_LENGTH/3)){
-			decision = 1;
+		if(ti.total == DEFEND && std::abs(si.distance_gate[id][1] < FIELD_LENGTH/3)){
+			decision = PASS_CHOOSE;
 		}else{
-			if(ti.detail == 4)
-				decision = 3;
+			if(ti.detail == Break_More)
+				decision = DRI_CHOOSE;
 			else
-				decision = 2;
+				decision = PASS_CHOOSE;
 		}
 	}
+	return decision;
+}
+
+int32_t RealStatus::PassSelect(int32_t id){
+	// compute every reason to make decision
+	bool up = id < 10? true : false;
+	TacticsInfo &ti = up? ti_up : ti_down;
+	int32_t pass_decision = PASS_FORWARD; 
+	if(ti.total == DEFEND)	pass_decision = PASS_BACK;
+	return pass_decision;
+}
+
+// id is player/keeper's id who catch the ball
+void RealStatus::SmartCatch(int32_t id) 
+{
+	int32_t decision = SmartSelect(id);
 	// if shoot
-	if(decision == 0)
+	if(decision == SHOOT_CHOOSE)
 	{
-		int strength = player[id].getPlayerPhy_Atr().strength;
-		int speed = strength; // 1 ~ 20 m/s
-		ball.setSpeed(si.distance_gate[id][0] * speed / si.distance_gate[id][1], speed);
-		BallControl = false;
-		status_comment = "He is shooting !!!";
+		MakeShoot(id);
 		return;
 	}
 	// if siege
-	if(decision == 1)
+	if(decision == SIEGE_CHOOSE)
 	{
-		outside = true;
-		int x = posx < FIELD_WIDTH/2 ? 0 : FIELD_WIDTH;
-		ball.setPosition(x, posy);
-		BallControl = false;
-		status_comment = "He is siegeing ...";
+		MakeSiege(id);
 		return;
 	}
 	// if pass
-	if(decision == 2)
+	if(decision == PASS_CHOOSE)
 	{
-		// compute every reason to make decision
-		int pass_decision = 0; // 0 is pass forward, 1 is pass back
-		if(ti.total == 1)	pass_decision = 1;
-		// if pass forward
-		if(pass_decision == 0)
-		{
-			int32_t start = up ? 0 : 10;
-			int32_t index = -1 , count = 11;
-			for(int32_t i = start; i < start + 10; i++){
-				if(i != id){ 
-					if(start == 10 && player[i].getPositionY() > posy){
-						if(si.around_boys[i] < count){
-							count = si.around_boys[i];
-							index = i;
-						}
-					}
-					if(start == 0 && player[i].getPositionY() < posy){
-						if(si.around_boys[i] < count){
-							count = si.around_boys[i];
-							index = i;
-						}
-					}
-				}
-			}
-			int32_t strength = player[id].getPlayerPhy_Atr().strength;
-			int32_t speed = strength; // 1 ~ 20 m/s
-			int32_t sign_x = 1, sign_y = 1;			
-			if(si.distance_boy[id][index][0] < 0)	sign_x = -1;
-			if(si.distance_boy[id][index][1] < 0)	sign_y = -1;
-
-			ball.setSpeed( sign_x*abs(si.distance_boy[id][index][0]) * speed 
-									/ abs(si.distance_boy[id][index][1]), sign_y*speed);
-			BallControl = false;
-			//status_comment = "He is passing forward !";
-			status_comment = Int2Str(id) + " is passing forward to " + 
-							Int2Str(index) + " by the speed of " + Int2Str(speed) + " !";
-			return;
-		}
-		// if pass back
-		if(pass_decision == 1)
-		{
-			int start = up ? 0 : 10;
-			int index = -1 , count = 11;
-			for(int32_t i = start; i < start + 10; i++){
-				if(i != id){ 
-					if(start == 10 && player[i].getPositionY() < posy){
-						if(si.around_boys[i] < count){
-							count = si.around_boys[i];
-							index = i;
-						}
-					}
-					if(start == 0 && player[i].getPositionY() > posy){
-						if(si.around_boys[i] < count){
-							count = si.around_boys[i];
-							index = i;
-						}
-					}
-				}
-			}
-			int strength = player[id].getPlayerPhy_Atr().strength;
-			int speed = strength; // 1 ~ 20 m/s
-			ball.setSpeed( si.distance_boy[id][index][0] * speed 
-									/ si.distance_boy[id][index][1], speed);
-			BallControl = false;
-			status_comment = "He is passing back .";
-			return;
-		}
-		if(decision == 3){
-			// will construct
-			status_comment = "He is getting break !!";
-			return;
-		}
+		MakePass(id);
+		return;
+	}
+	if(decision == DRI_CHOOSE){
+		// will construct
+		status_comment = "He is getting break !!";
+		return;
 	}
 }
 
@@ -433,8 +377,27 @@ void RealStatus::SmartDefend(int32_t id){
 }
 
 // smart choose for the attack side player
-void RealStatus::SmartAttack(int32_t id){
+void RealStatus::SmartAttack(int32_t id = -1){
 	//default
+	if(BallControl){
+		// none
+	}else{
+		int32_t min = MAX_INT;
+		int32_t tmp = 0;
+		int32_t index = 0;
+		for(int32_t i = 0; i < NUM_BOYS; i++){
+			if((tmp = Distance(si.distance_ball[i][0], si.distance_ball[i][1])) < min){
+				min = tmp;
+				index = i;
+			}
+		}
+		PRINT_MSG("the nearest id : %d, distance is %d", index, min);
+		if(min < GET_DIS && id != index){
+			PRINT_MSG("%d catch the ball", index);
+			BallControl = true;
+			catch_boy = index;
+		}
+	}
 }
 
 // when the goal, notify.
@@ -484,4 +447,111 @@ std::string RealStatus::TextComment(){
 
 BallStatus RealStatus::getBallStatus(){
 	return ball;
+}
+
+void RealStatus::MakeShoot(int32_t id){
+	int strength = player[id].getPlayerPhy_Atr().strength;
+	int speed = strength; // 1 ~ 20 m/s
+	ball.setSpeed(si.distance_gate[id][0] * speed / si.distance_gate[id][1], speed);
+	BallControl = false;
+	status_comment = "He is shooting !!!";
+}
+
+void RealStatus::MakeSiege(int32_t id){
+	outside = true;
+	int posx = player[id].getPositionX();
+	int posy = player[id].getPositionY();
+	int x = posx < FIELD_WIDTH/2 ? 0 : FIELD_WIDTH;
+	ball.setPosition(x, posy);
+	BallControl = false;
+	status_comment = "He is siegeing ...";
+}
+
+void RealStatus::MakePass(int32_t id){
+	int32_t pass_decision = PassSelect(id);
+	//PRINT_MSG("pass_decision: %d", pass_decision);
+	// if pass forward
+	if(pass_decision == PASS_FORWARD)
+	{
+		MakePassForward(id);
+		return;
+	}
+	// if pass back
+	if(pass_decision == PASS_BACK)
+	{
+		MakePassBack(id);
+		return;
+	}
+}
+
+void RealStatus::MakePassForward(int32_t id){
+	int posy = player[id].getPositionY();
+	bool up = id < 10? true : false;
+	int32_t start = up ? 0 : 10;
+	int32_t index = -1 , count = 11;
+	for(int32_t i = start; i < start + 10; i++){
+		if(i != id){ 
+			if(start == 10 && player[i].getPositionY() > posy){
+				if(si.around_boys[i] < count){
+					count = si.around_boys[i];
+					index = i;
+				}
+			}
+			if(start == 0 && player[i].getPositionY() < posy){
+				if(si.around_boys[i] < count){
+					count = si.around_boys[i];
+					index = i;
+				}
+			}
+		}
+	}
+	int32_t strength = player[id].getPlayerPhy_Atr().strength;
+	int32_t speed = GenSpeed(strength); // 1 ~ 20 m/s
+	int32_t sign_x = 1, sign_y = 1;			
+	if(si.distance_boy[id][index][0] < 0)	sign_x = -1;
+	if(si.distance_boy[id][index][1] < 0)	sign_y = -1;
+
+	ball.setSpeed( sign_x*abs(si.distance_boy[id][index][0]) * speed 
+				/ abs(si.distance_boy[id][index][1]), sign_y*speed);
+	BallControl = false;
+	//status_comment = "He is passing forward !";
+	status_comment = Int2Str(id) + " is passing forward to " + 
+					Int2Str(index) + " by the speed of " + 
+					Int2Str(speed) + " !";
+}
+
+void RealStatus::MakePassBack(int32_t id){
+	int posy = player[id].getPositionY();
+	bool up = id < 10? true : false;
+	int start = up ? 0 : 10;
+	int index = -1 , count = 11;
+	for(int32_t i = start; i < start + 10; i++){
+		if(i != id){ 
+			if(start == 10 && player[i].getPositionY() < posy){
+				if(si.around_boys[i] < count){
+					count = si.around_boys[i];
+					index = i;
+				}
+			}
+			if(start == 0 && player[i].getPositionY() > posy){
+				if(si.around_boys[i] < count){
+					count = si.around_boys[i];
+					index = i;
+				}
+			}
+		}
+	}
+	int strength = player[id].getPlayerPhy_Atr().strength;
+	int speed = strength; // 1 ~ 20 m/s
+	ball.setSpeed( si.distance_boy[id][index][0] * speed 
+							/ si.distance_boy[id][index][1], speed);
+	BallControl = false;
+	status_comment = "He is passing back .";
+}
+
+std::vector<int32_t> RealStatus::getFreePlayer(bool up){
+	std::vector<int32_t> data;
+	int32_t start = 0;
+	if(!up){ start = 10;}
+	return data;
 }

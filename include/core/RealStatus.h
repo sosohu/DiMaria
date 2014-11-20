@@ -223,12 +223,25 @@ class RealStatus
 	private:
 		
 		// id is player/keeper's id who catch the ball
-		void SmartSelect(int32_t id);
-
-		//	
+		void SmartCatch(int32_t id);
 		void SmartDefend(int32_t id);
-
 		void SmartAttack(int32_t id);
+
+		// detail, select which way: shoot, siege, pass or dribbling
+		int32_t SmartSelect(int32_t id);
+		// detail, select how to pass: pass forward or pass back
+		int32_t PassSelect(int32_t id);
+		
+		// detail, exe the choose
+		void MakeShoot(int32_t id);
+		void MakeSiege(int32_t id);
+		void MakePass(int32_t id);
+		void MakeDri(int32_t id);
+		void MakePassForward(int32_t id);
+		void MakePassBack(int32_t id);
+
+		// return the free player
+		std::vector<int32_t>	getFreePlayer(bool up);
 	private:
 		// 0~9 is up side, 10~19 is down side, 20 is up keeper, 21 is down keeper
 		std::vector<PlayerStatus> player;  // 20 palyer

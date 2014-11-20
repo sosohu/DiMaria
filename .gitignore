@@ -4,3 +4,9 @@
 *.so
 *.swp
 tags
+outlog
+test/main
+
+#Filter folder
+data/
+lib/
