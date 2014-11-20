@@ -243,6 +243,7 @@ class RealStatus
 		// move;
 		void MoveForward(int32_t id);
 		void MoveForMeet(int32_t id);
+		void Modify(BallStatus &bs);
 
 		// return the free player
 		std::vector<int32_t>	getFreePlayer(int32_t id);
@@ -266,6 +267,7 @@ class RealStatus
 		int32_t	get_boy; // catch_boy pass ball to get_boy, -1 is NULL
 		int32_t meet_x; // the x position will the get_boy meet the ball
 		int32_t meet_y;	// the y position will the get_boy meet the ball
+		int32_t pass_t; // the time should be cost for pass ball from catch_boy to get_ball
 
 		/* the ball is outside and turn to the outside ball status
 			judge the position by the ball's position

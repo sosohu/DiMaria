@@ -122,17 +122,18 @@ void RealStatus::ComputeStatus()
 	int32_t len = player.size();
 	// compute the distance_boy
 	// for player to player
-	for(int32_t i = 0; i < len -1; i++){
+	for(int32_t i = 0; i < len - 1; i++){
 		for(int32_t j = i + 1; j < len; j++){
 			si.distance_boy[i][j][0] = player[j].getPositionX() 
 										- player[i].getPositionX(); 
 			si.distance_boy[i][j][1] = player[j].getPositionY() 
 										- player[i].getPositionY(); 
-			si.distance_boy[j][i][0] = -si.distance_boy[j][i][0];
-			si.distance_boy[j][i][1] = -si.distance_boy[j][i][1];
+			si.distance_boy[j][i][0] = -si.distance_boy[i][j][0];
+			si.distance_boy[j][i][1] = -si.distance_boy[i][j][1];
 		}
 	}
 	// for keeper to palyer
+	/*
 	for(int32_t i = 0; i < len; i++){
 		si.distance_boy[20][i][0] = player[i].getPositionX()
 									- player[20].getPositionX();
@@ -155,6 +156,7 @@ void RealStatus::ComputeStatus()
 								- player[20].getPositionY();
 	si.distance_boy[21][20][0] = -si.distance_boy[20][21][0];
 	si.distance_boy[21][20][1] = -si.distance_boy[20][21][1];
+	*/
 
 	// compute the around_boys
 	for(int32_t i = 0; i < 10; i++){
@@ -240,7 +242,11 @@ void RealStatus::ComputeStatus()
 int32_t RealStatus::NextStatus()
 {				
 	ball.setPositionMove(ball.getSpeed());
-	ball.weaken();
+	if(!BallControl){
+		pass_t--;
+		Modify(ball);
+	}
+	//ball.weaken();
 	PRINT_MSG("ball position: %d %d",ball.getPositionX(), ball.getPositionY());
 	PRINT_MSG("ball speed: %d %d",ball.getSpeed().get_x_speed(), ball.getSpeed().get_y_speed());
 	ComputeStatus(); // compute the StatusInfo	
@@ -333,6 +339,7 @@ int32_t RealStatus::PassSelect(int32_t id){
 void RealStatus::SmartCatch(int32_t id) 
 {
 	int32_t decision = SmartSelect(id);
+	PRINT_MSG("decision: %d", decision);
 	switch(decision){
 		case SHOOT_CHOOSE:	MakeShoot(id);	break;
 		case SIEGE_CHOOSE:	MakeSiege(id);	break;
@@ -383,10 +390,13 @@ void RealStatus::SmartAttack(int32_t id){
 			}
 		}
 		PRINT_MSG("the nearest id : %d, distance is %d", index, min);
-		if(min < GET_DIS && id != index && id == get_boy){
+		PRINT_MSG("id is %d, get_boy is %d", id, get_boy);
+		if(min < GET_DIS && id != index && index == get_boy){
 			PRINT_MSG("%d catch the ball", index);
 			BallControl = true;
 			catch_boy = index;
+			ball.setSpeed(0, 0);
+			player[index].setPosition(ball.getPositionX(), ball.getPositionY());
 		}else{
 			MoveForMeet(get_boy); // get_boy need to meet the ball
 			// other attack run
@@ -451,6 +461,7 @@ BallStatus RealStatus::getBallStatus(){
 void RealStatus::MakeShoot(int32_t id){
 	int strength = player[id].getPlayerPhy_Atr().strength;
 	int speed = strength; // 1 ~ 20 m/s
+	assert(si.distance_gate[id][1] != 0);
 	ball.setSpeed(si.distance_gate[id][0] * speed / si.distance_gate[id][1], speed);
 	BallControl = false;
 	status_comment = "He is shooting !!!";
@@ -513,6 +524,10 @@ void RealStatus::MakePassForward(int32_t id){
 
 	int32_t dis = Distance(si.distance_boy[id][index][0], 
 							si.distance_boy[id][index][1]);
+	PRINT_MSG("id %d, index %d", id, index);
+	PRINT_MSG("id x %d, y %d", player[id].getPositionX(), player[id].getPositionY());
+	PRINT_MSG("index x %d, y %d", player[index].getPositionX(), player[index].getPositionY());
+	assert(dis != 0);
 	int32_t speedx = si.distance_boy[id][index][0] * speed / dis;
 	int32_t speedy = si.distance_boy[id][index][1] * speed / dis;
 	ball.setSpeed( speedx, speedy);
@@ -520,6 +535,7 @@ void RealStatus::MakePassForward(int32_t id){
 	get_boy = index;
 	meet_x = player[index].getPositionX();
 	meet_y = player[index].getPositionY();
+	pass_t = dis / speed;
 	//status_comment = "He is passing forward !";
 	status_comment = Int2Str(id) + " is passing forward to " + 
 					Int2Str(index) + " by the speed of " + 
@@ -551,6 +567,7 @@ void RealStatus::MakePassBack(int32_t id){
 	int32_t speed = GenSpeed(strength); // 1 ~ 20 m/s
 	int32_t dis = Distance(si.distance_boy[id][index][0], 
 							si.distance_boy[id][index][1]);
+	assert(dis != 0);
 	int32_t speedx = si.distance_boy[id][index][0] * speed / dis ;
 	int32_t speedy = si.distance_boy[id][index][1] * speed / dis ;
 	ball.setSpeed( speedx, speedy);
@@ -558,7 +575,10 @@ void RealStatus::MakePassBack(int32_t id){
 	get_boy = index;
 	meet_x = player[index].getPositionX();
 	meet_y = player[index].getPositionY();
-	status_comment = "He is passing back .";
+	pass_t = dis / speed;
+	status_comment = Int2Str(id) + " is passing back to " + 
+					Int2Str(index) + " by the speed of " + 
+					Int2Str(speed) + " .";
 }
 
 void RealStatus::MoveForward(int32_t id){
@@ -572,10 +592,12 @@ void RealStatus::MoveForMeet(int32_t id){
 		int32_t disx = meet_x - posx;
 		int32_t disy = meet_y - posy;
 		int32_t dis = Distance(disx, disy);
+		assert(dis != 0);
 		int32_t strength = player[id].getPlayerPhy_Atr().strength;
 		int32_t speed = GenSpeed(strength);
 		posx = posx + disx * speed / dis;
 		posy = posy + disy * speed / dis;
+		player[id].setPosition(posx, posy);
 	}
 }
 
@@ -635,4 +657,20 @@ std::vector<int32_t> RealStatus::getFreePlayerPara(int32_t id){
 		}
 	}
 	return data;
+}
+
+void RealStatus::Modify(BallStatus &bs){
+	int32_t speedx = bs.getSpeed().get_x_speed(); // 1 ~ 20 m/s
+	int32_t speedy = bs.getSpeed().get_y_speed(); // 1 ~ 20 m/s
+	int32_t dis = Distance(meet_x - bs.getPositionX(), 
+							meet_y - bs.getPositionY());
+	if(dis == 0)	return;
+	if(pass_t == 0){ 
+		ball.setPosition(meet_x, meet_y);
+		return;
+	}
+	int32_t speed = dis / pass_t;
+	int32_t new_speedx = (meet_x - bs.getPositionX()) * speed / dis;
+	int32_t new_speedy = (meet_y - bs.getPositionY()) * speed / dis;
+	ball.setSpeed( new_speedx, new_speedy);
 }
