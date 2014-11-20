@@ -3,6 +3,7 @@
 
 #include<stdint.h>
 
+// const value set fot whole project, there should be all up alpha.
 
 // const value
 const int32_t	FIELD_WIDTH = 68;

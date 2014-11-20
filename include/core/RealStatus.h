@@ -240,8 +240,16 @@ class RealStatus
 		void MakePassForward(int32_t id);
 		void MakePassBack(int32_t id);
 
+		// move;
+		void MoveForward(int32_t id);
+		void MoveForMeet(int32_t id);
+
 		// return the free player
-		std::vector<int32_t>	getFreePlayer(bool up);
+		std::vector<int32_t>	getFreePlayer(int32_t id);
+		std::vector<int32_t>	getFreePlayerForward(int32_t id);
+		std::vector<int32_t>	getFreePlayerBack(int32_t id);
+		std::vector<int32_t>	getFreePlayerPara(int32_t id);
+
 	private:
 		// 0~9 is up side, 10~19 is down side, 20 is up keeper, 21 is down keeper
 		std::vector<PlayerStatus> player;  // 20 palyer
@@ -255,6 +263,9 @@ class RealStatus
 			is the down side's keeper
 		*/
 		int32_t	catch_boy; // only valid when BallControl is true
+		int32_t	get_boy; // catch_boy pass ball to get_boy, -1 is NULL
+		int32_t meet_x; // the x position will the get_boy meet the ball
+		int32_t meet_y;	// the y position will the get_boy meet the ball
 
 		/* the ball is outside and turn to the outside ball status
 			judge the position by the ball's position

@@ -206,6 +206,8 @@ class Player : public People {
 
 	Kee_Atr getKee_Atr();
 
+	Play_Pos getPlay_Pos();
+
       private:
 	Phy_Atr phy_atr;
 	Men_Atr men_atr;
