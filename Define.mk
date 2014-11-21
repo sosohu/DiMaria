@@ -6,7 +6,8 @@ CXXFLAGS=-O3 -fPIC --std=c++0x -DDEBUG -g
 AR=ar
 ARFLAGS=-r
 
-LIBGL=-lglut -lGLU -lGL -lm
+#LIBGL=-lglut -lGLU -lGL -lm
+LIBGL=
 LIBS=$(LIBGL)
 
 INC=$(HOME)/include

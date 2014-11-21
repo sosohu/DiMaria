@@ -1,5 +1,5 @@
-#ifndef __MMATH__H__
-#define __MMATH__H__
+#ifndef __MATH__H__
+#define __MATH__H__
 
 #include <cstdint>
 
