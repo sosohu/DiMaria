@@ -26,6 +26,8 @@ const int32_t 	ATR_MAX_LEN = 200;
 const int32_t	NUM_ATR = 41;  // update in the time
 const int32_t	MIN_INT = (-1<<31);
 const int32_t	MAX_INT	= -(MIN_INT + 1);
+const int32_t	STEP_LEN = 3; // player move len per step by the max speed
+const int32_t	MAX_ATR = 20;  // max atr value
 // Status
 const int32_t	OVER_STATUS = 0xa0;
 const int32_t	CORNER_STATUS = 0xa1;

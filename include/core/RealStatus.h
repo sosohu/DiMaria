@@ -12,24 +12,6 @@ typedef struct
 	int32_t	y_end;
 }	Scope;
 
-// in the down side view
-Scope scope_pos[NUM_POS] = {
-		{ 0, FIELD_WIDTH, FIELD_LENGTH - 44, FIELD_LENGTH },	//	ST
-		{ 10, FIELD_WIDTH - 10, FIELD_LENGTH - 44, FIELD_LENGTH - 10}, //	AMC
-		{ 0, FIELD_WIDTH/2, FIELD_LENGTH - 44, FIELD_LENGTH},	// 	AML
-		{ FIELD_WIDTH/2, FIELD_WIDTH, FIELD_LENGTH - 44, FIELD_LENGTH},	//	AMR
-		{10, FIELD_WIDTH - 10, FIELD_LENGTH/2 - 20, FIELD_LENGTH/2 + 30},	//	MC
-		{0, FIELD_WIDTH/2, FIELD_LENGTH/2 - 20, FIELD_LENGTH/2 + 30},	//	ML
-		{FIELD_WIDTH/2, FIELD_WIDTH, FIELD_LENGTH/2 - 20, FIELD_LENGTH/2 + 30},	//	MR
-		{10, FIELD_WIDTH - 10, FIELD_LENGTH/2 - 30, FIELD_LENGTH/2 + 10},	//	DM
-		{10, FIELD_WIDTH - 10, 0, 40},	//	DC
-		{0, FIELD_WIDTH/2, 0, 40},	//	DL
-		{FIELD_WIDTH/2, FIELD_WIDTH, 0, 40},	//	DR
-		{0, FIELD_WIDTH/2, 0, 70},	//	WL
-		{FIELD_WIDTH/2, FIELD_WIDTH, 0, 70}	//	WR
-			//	...
-};
-
 typedef	struct StatusInfo
 {
 	// distance of each two boys,the 3rd dim declares x diraction and y diraction 
@@ -111,6 +93,10 @@ class RealStatus
 		// return BallStatus
 		BallStatus getBallStatus();
 
+		// debug
+		// print all the players' position
+		void print_pos();
+
 	private:
 		
 		// id is player/keeper's id who catch the ball
@@ -141,6 +127,12 @@ class RealStatus
 		std::vector<int32_t>	getFreePlayerForward(int32_t id);
 		std::vector<int32_t>	getFreePlayerBack(int32_t id);
 		std::vector<int32_t>	getFreePlayerPara(int32_t id);
+
+		// other;
+		// return the up/down's offside line
+		int32_t offsideLine(bool up);
+		// in the up side view, wheather the position p is free, which is no down side player around
+		bool isFreePosition(Position p, bool up);
 
 	private:
 		// 0~9 is up side, 10~19 is down side, 20 is up keeper, 21 is down keeper

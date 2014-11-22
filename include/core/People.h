@@ -188,7 +188,7 @@ typedef enum Play_Pos
 } Play_Pos;
 
 
-void setPlay_Pos(Play_Pos pp, std::string data);
+void setPlay_Pos(Play_Pos &pp, std::string data);
 
 class Player : public People {
       public:

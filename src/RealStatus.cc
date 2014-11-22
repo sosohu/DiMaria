@@ -4,6 +4,25 @@
 #include "Math.h"
 #include "Environment.h"
 #include <cmath>
+#include <algorithm>
+
+// in the down side view
+Scope scope_pos[NUM_POS] = {
+		{ 0, FIELD_WIDTH, FIELD_LENGTH - 44, FIELD_LENGTH },	//	ST
+		{ 10, FIELD_WIDTH - 10, FIELD_LENGTH - 44, FIELD_LENGTH - 10}, //	AMC
+		{ 0, FIELD_WIDTH/2, FIELD_LENGTH - 44, FIELD_LENGTH},	// 	AML
+		{ FIELD_WIDTH/2, FIELD_WIDTH, FIELD_LENGTH - 44, FIELD_LENGTH},	//	AMR
+		{10, FIELD_WIDTH - 10, FIELD_LENGTH/2 - 20, FIELD_LENGTH/2 + 30},	//	MC
+		{0, FIELD_WIDTH/2, FIELD_LENGTH/2 - 20, FIELD_LENGTH/2 + 30},	//	ML
+		{FIELD_WIDTH/2, FIELD_WIDTH, FIELD_LENGTH/2 - 20, FIELD_LENGTH/2 + 30},	//	MR
+		{10, FIELD_WIDTH - 10, FIELD_LENGTH/2 - 30, FIELD_LENGTH/2 + 10},	//	DM
+		{10, FIELD_WIDTH - 10, 0, 40},	//	DC
+		{0, FIELD_WIDTH/2, 0, 40},	//	DL
+		{FIELD_WIDTH/2, FIELD_WIDTH, 0, 40},	//	DR
+		{0, FIELD_WIDTH/2, 0, 70},	//	WL
+		{FIELD_WIDTH/2, FIELD_WIDTH, 0, 70}	//	WR
+			//	...
+};
 
 void RealStatus::ComputeStatus()
 {
@@ -141,8 +160,10 @@ int32_t RealStatus::NextStatus()
 	if(BallControl){
 		// for catch boy
 		SmartCatch(catch_boy);
+		PRINT_MSG("%s",Str2Chr(status_comment));
 		// for forward boy
 		SmartAttack(catch_boy);
+		PRINT_MSG("%s",Str2Chr(status_comment));
 		// for steal boy
 		SmartDefend(catch_boy);
 		return CON_STATUS;
@@ -288,11 +309,7 @@ void RealStatus::SmartAttack(int32_t id){
 		}else{
 			MoveForMeet(get_boy); // get_boy need to meet the ball
 			// other attack run
-			for(int32_t i = start; i < start + 10; i++){
-				if(i != id && i != get_boy){
-					MoveForward(i);
-				}
-			}
+			MoveForward(id);
 		}
 	}
 }
@@ -339,6 +356,7 @@ void RealStatus::StartOutside(){
 
 // return the comment of match by the Status.
 std::string RealStatus::TextComment(){
+	PRINT_MSG("%s",Str2Chr(status_comment));
 	return status_comment;
 }
 
@@ -409,6 +427,7 @@ void RealStatus::MakePassForward(int32_t id){
 	}
 	int32_t strength = player[id].getPlayerPhy_Atr().strength;
 	int32_t speed = GenSpeed(strength); // 1 ~ 20 m/s
+	assert(speed > 0);
 
 	int32_t dis = Distance(si.distance_boy[id][index][0], 
 							si.distance_boy[id][index][1]);
@@ -473,16 +492,33 @@ void RealStatus::MoveForward(int32_t id){
 	bool up = isUpSide(id);
 	Scope s;
 	if(up){
+		int32_t line = offsideLine(true);
 		for(int32_t i = 0; i < 10; i++){
 			if(i != id && i != get_boy){
+				int32_t posx = player[i].getPositionX();
+				int32_t posy = player[i].getPositionX();
+				int32_t pace = player[i].getPlayerPhy_Atr().pace;
 				s = scope_pos[player[i].getPlayer().getPlay_Pos()];
+				PRINT_MSG("Player Pos %d", player[i].getPlayer().getPlay_Pos());
 				s = tran2UpScope(s);
 				// we assume that each player should be in its scope
 				// and do not get out of its scope
 				if(isInScope(player[i].getPosition(), s)){
 					// in the scope
 					// smartly move forward for the no-player zone
-
+					// not offside
+					if(posy > line){
+						//turn forward straightly
+						if(isFreePosition(Position(posx, posy + STEP_LEN*pace/MAX_ATR), true)){
+							player[i].setPosition(posx, posy + STEP_LEN*pace/MAX_ATR);
+						}else{
+							// might left, right, left-up or right-up
+							randChooseUp(posx, posy, pace);
+							player[i].setPosition(posx, posy);
+						}
+					}else{// offside, back
+						player[i].setPosition(posx, posy - STEP_LEN*pace/MAX_ATR);
+					}
 				}else{
 					// out off the scope
 					// stand and not move
@@ -583,4 +619,61 @@ void RealStatus::Modify(BallStatus &bs){
 	int32_t new_speedx = (meet_x - bs.getPositionX()) * speed / dis;
 	int32_t new_speedy = (meet_y - bs.getPositionY()) * speed / dis;
 	ball.setSpeed( new_speedx, new_speedy);
+}
+
+int32_t RealStatus::offsideLine(bool up){
+	if(up){
+		// for up, compute the down side last two boy's y position
+		std::vector<int32_t> posy(11,0);
+		for(int32_t i = 10; i < 20; i++){
+			posy[i] = player[i].getPositionY();
+		}
+		posy[10] = player[21].getPositionY();
+		sort(posy.begin(), posy.end());
+		return posy[1];
+	}else{
+		// for down, compute the up side last two boy's y position
+		std::vector<int32_t> posy(11,0);
+		for(int32_t i = 0; i < 10; i++){
+			posy[i] = player[i].getPositionY();
+		}
+		posy[10] = player[20].getPositionY();
+		sort(posy.begin(), posy.end());
+		return posy[9];
+	}
+}
+
+bool RealStatus::isFreePosition(Position p, bool up){
+	int32_t count = 0;
+	if(up){
+		for(int32_t i = 10; i < 20; i++){
+			if(abs(player[i].getPositionX() - p.get_x()) < FREE_DIS
+			&& abs(player[i].getPositionY() - p.get_y()) < FREE_DIS){
+				count++;
+			}
+		}
+		if(abs(player[21].getPositionX() - p.get_x()) < FREE_DIS
+					&& abs(player[21].getPositionY() - p.get_y()) < FREE_DIS){
+						count++;
+		}
+	}else{
+		for(int32_t i = 0; i < 10; i++){
+			if(abs(player[i].getPositionX() - p.get_x()) < FREE_DIS
+			&& abs(player[i].getPositionY() - p.get_y()) < FREE_DIS){
+				count++;
+			}
+		}
+		if(abs(player[20].getPositionX() - p.get_x()) < FREE_DIS
+					&& abs(player[20].getPositionY() - p.get_y()) < FREE_DIS){
+						count++;
+		}
+	}
+	return count == 0;
+}
+
+
+void RealStatus::print_pos(){
+	for(int32_t i = 0; i < NUM_BOYS; i++){
+		PRINT_ERROR("Player %d in %d, %d", i, player[i].getPositionX(), player[i].getPositionY());
+	}
 }

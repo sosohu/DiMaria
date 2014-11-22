@@ -181,6 +181,7 @@ int main(int argc, char** argv)
 	while(ret != OVER_STATUS){
 		ret = rl.NextStatus();
 		std::cout<<rl.TextComment()<<std::endl;
+		rl.print_pos();
 		//std::cout<<"ball position: "<<rl.getBallStatus().getPositionX()<<" , "
 		//		<<rl.getBallStatus().getPositionY()<<std::endl;
 	}

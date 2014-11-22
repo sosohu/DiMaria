@@ -21,8 +21,8 @@
 #define LIGHT_GRAY   "\033[0;37m"
 #define WHITE        "\033[1;37m"
 
-// defined pring msg
 #ifdef DEBUG
+	// defined pring msg
 	#define PRINT_MSG(format, args...) \
 	{\
 		printf(BLUE "%s %s %d :  " NONE, __FILE__, __func__, __LINE__);\
@@ -34,9 +34,12 @@
 		printf(RED "%s %s %d :  " NONE, __FILE__, __func__, __LINE__);\
 		printf(RED format NONE"\n", ##args);\
 	}
+
 #else
 	#define PRINT_MSG(format, args...)
 	#define PRINT_ERROR(format, args...) 
+	#define PRINT(MODE, format, args...)
 #endif
+
 
 #endif

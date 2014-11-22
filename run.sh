@@ -1,2 +1,3 @@
 source config/conf.sh
-./test/main /home/sosohu/huqinghai/work/DiMaria/data/players.data
+HPATH=`pwd`
+./test/main $HPATH/data/players.data

@@ -21,7 +21,7 @@ Play_Pos Player::getPlay_Pos(){
 	return pos;
 }
 
-void setPlay_Pos(Play_Pos pp, std::string data){
+void setPlay_Pos(Play_Pos &pp, std::string data){
 	if(data.compare("ST") == 0){
 		pp = ST;
 		return;

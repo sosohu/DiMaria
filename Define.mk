@@ -1,5 +1,5 @@
 
-HOME=/home/sosohu/huqinghai/work/DiMaria
+HOME=/home/sosohu/workspace/DiMaria
 CC=gcc
 CFLAGS=-O3 -fPIC -g
 CXXFLAGS=-O3 -fPIC --std=c++0x -DDEBUG -g

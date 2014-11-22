@@ -23,7 +23,7 @@ class Speed
 class Position
 {
 	public:
-		Position(int32_t x, int32_t y, bool is_down): x(x), y(y), is_down(is_down){
+		Position(int32_t x, int32_t y, bool is_down = false): x(x), y(y), is_down(is_down){
 		}
 
 		//Position(const Position& other){}          // copy construct function
