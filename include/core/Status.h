@@ -10,6 +10,7 @@ class Status
 {
 	public:
 		Status(Position p, Speed s):position(p),speed(s){}
+
 		virtual	~Status(){}
 		
 		virtual void NextStatus() const {}

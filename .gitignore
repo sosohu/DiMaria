@@ -6,7 +6,11 @@
 tags
 outlog
 test/main
+.cproject
+.project
 
 #Filter folder
 data/
 lib/
+.settings/
+Debug/

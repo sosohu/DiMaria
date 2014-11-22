@@ -12,20 +12,21 @@ typedef struct
 	int32_t	y_end;
 }	Scope;
 
+// in the down side view
 Scope scope_pos[NUM_POS] = {
-		{ 0, FIELD_WIDTH, FIELD_LENGTH - 30, FIELD_LENGTH },	//	ST
-		{}, //	AMC
-		{},	// 	AML
-		{},	//	AMR
-		{},	//	MC
-		{},	//	ML
-		{},	//	MR
-		{},	//	DM
-		{},	//	DC
-		{},	//	DL
-		{},	//	DR
-		{},	//	WL
-		{}	//	WR
+		{ 0, FIELD_WIDTH, FIELD_LENGTH - 44, FIELD_LENGTH },	//	ST
+		{ 10, FIELD_WIDTH - 10, FIELD_LENGTH - 44, FIELD_LENGTH - 10}, //	AMC
+		{ 0, FIELD_WIDTH/2, FIELD_LENGTH - 44, FIELD_LENGTH},	// 	AML
+		{ FIELD_WIDTH/2, FIELD_WIDTH, FIELD_LENGTH - 44, FIELD_LENGTH},	//	AMR
+		{10, FIELD_WIDTH - 10, FIELD_LENGTH/2 - 20, FIELD_LENGTH/2 + 30},	//	MC
+		{0, FIELD_WIDTH/2, FIELD_LENGTH/2 - 20, FIELD_LENGTH/2 + 30},	//	ML
+		{FIELD_WIDTH/2, FIELD_WIDTH, FIELD_LENGTH/2 - 20, FIELD_LENGTH/2 + 30},	//	MR
+		{10, FIELD_WIDTH - 10, FIELD_LENGTH/2 - 30, FIELD_LENGTH/2 + 10},	//	DM
+		{10, FIELD_WIDTH - 10, 0, 40},	//	DC
+		{0, FIELD_WIDTH/2, 0, 40},	//	DL
+		{FIELD_WIDTH/2, FIELD_WIDTH, 0, 40},	//	DR
+		{0, FIELD_WIDTH/2, 0, 70},	//	WL
+		{FIELD_WIDTH/2, FIELD_WIDTH, 0, 70}	//	WR
 			//	...
 };
 

@@ -470,7 +470,29 @@ void RealStatus::MakePassBack(int32_t id){
 }
 
 void RealStatus::MoveForward(int32_t id){
+	bool up = isUpSide(id);
+	Scope s;
+	if(up){
+		for(int32_t i = 0; i < 10; i++){
+			if(i != id && i != get_boy){
+				s = scope_pos[player[i].getPlayer().getPlay_Pos()];
+				s = tran2UpScope(s);
+				// we assume that each player should be in its scope
+				// and do not get out of its scope
+				if(isInScope(player[i].getPosition(), s)){
+					// in the scope
+					// smartly move forward for the no-player zone
 
+				}else{
+					// out off the scope
+					// stand and not move
+					;
+				}
+			}
+		}
+	}else{
+
+	}
 }
 
 void RealStatus::MoveForMeet(int32_t id){
