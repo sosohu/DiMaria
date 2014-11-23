@@ -171,20 +171,20 @@ typedef struct Kee_Atr {
 
 typedef enum Play_Pos
 {
-	ST,
-	AMC,
-	AML,
-	AMR,
-	MC,
-	ML,
-	MR,
-	DM,
-	DC,
-	DL,
-	DR,
-	WL,
-	WR,
-	GK
+	ST,  // 0
+	AMC, // 1
+	AML, // 2
+	AMR, // 3
+	MC,  // 4
+	ML,  // 5
+	MR,  // 6
+	DM,  // 7
+	DC,  // 8
+	DL,  // 9
+	DR,  // 10
+	WL,  // 11
+	WR,  // 12
+	GK   // 13
 } Play_Pos;
 
 

@@ -20,7 +20,8 @@ Scope scope_pos[NUM_POS] = {
 		{0, FIELD_WIDTH/2, 0, 40},	//	DL
 		{FIELD_WIDTH/2, FIELD_WIDTH, 0, 40},	//	DR
 		{0, FIELD_WIDTH/2, 0, 70},	//	WL
-		{FIELD_WIDTH/2, FIELD_WIDTH, 0, 70}	//	WR
+		{FIELD_WIDTH/2, FIELD_WIDTH, 0, 70},	//	WR
+		{FIELD_WIDTH/2 - 10 , FIELD_WIDTH/2 + 10, 0, 20}	//	GK
 			//	...
 };
 
@@ -499,7 +500,7 @@ void RealStatus::MoveForward(int32_t id){
 				int32_t posy = player[i].getPositionX();
 				int32_t pace = player[i].getPlayerPhy_Atr().pace;
 				s = scope_pos[player[i].getPlayer().getPlay_Pos()];
-				PRINT_MSG("Player Pos %d", player[i].getPlayer().getPlay_Pos());
+				//PRINT_MSG("Player %d is Player Pos %d", i,  player[i].getPlayer().getPlay_Pos());
 				s = tran2UpScope(s);
 				// we assume that each player should be in its scope
 				// and do not get out of its scope
@@ -511,13 +512,16 @@ void RealStatus::MoveForward(int32_t id){
 						//turn forward straightly
 						if(isFreePosition(Position(posx, posy + STEP_LEN*pace/MAX_ATR), true)){
 							player[i].setPosition(posx, posy + STEP_LEN*pace/MAX_ATR);
+							PRINT_INFO("Player %d is go forward.", i);
 						}else{
 							// might left, right, left-up or right-up
 							randChooseUp(posx, posy, pace);
 							player[i].setPosition(posx, posy);
+							PRINT_INFO("Player %d is go.", i);
 						}
 					}else{// offside, back
 						player[i].setPosition(posx, posy - STEP_LEN*pace/MAX_ATR);
+						PRINT_INFO("Player %d is go back.", i);
 					}
 				}else{
 					// out off the scope
@@ -626,7 +630,7 @@ int32_t RealStatus::offsideLine(bool up){
 		// for up, compute the down side last two boy's y position
 		std::vector<int32_t> posy(11,0);
 		for(int32_t i = 10; i < 20; i++){
-			posy[i] = player[i].getPositionY();
+			posy[i-10] = player[i].getPositionY();
 		}
 		posy[10] = player[21].getPositionY();
 		sort(posy.begin(), posy.end());
@@ -674,6 +678,6 @@ bool RealStatus::isFreePosition(Position p, bool up){
 
 void RealStatus::print_pos(){
 	for(int32_t i = 0; i < NUM_BOYS; i++){
-		PRINT_ERROR("Player %d in %d, %d", i, player[i].getPositionX(), player[i].getPositionY());
+		PRINT_INFO("Player %d in %d, %d", i, player[i].getPositionX(), player[i].getPositionY());
 	}
 }

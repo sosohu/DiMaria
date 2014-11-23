@@ -1,4 +1,6 @@
 #include "DiMaria/core.h"
+#include "DiMaria/io.h"
+#include "DiMaria/base.h"
 #include <iostream>
 #include <fstream>
 #include <stdint.h>
@@ -45,6 +47,8 @@ bool spliteAtr(std::string &data, Bas_Atr &ba, Phy_Atr &pa, Men_Atr &ma,
 	for(uint32_t i = 0; i < 13; i++)
 		it_start++;
 	ka.setValue(std::vector<std::string>(it_start, it_end), 8);
+	for(uint32_t i = 0; i < 8; i++)
+		it_start++;
 	setPlay_Pos(pp, *it_start);
 	//PRINT_MSG("PASS");
 }
@@ -148,16 +152,19 @@ int main(int argc, char** argv)
 		exit(OPEN_FAILED);
 	}
 	
-	char data[ATR_MAX_LEN];
-	file.getline(data, ATR_MAX_LEN);
-
-
-	std::string tmp = data;
-	spliteAtr(tmp, ba, pa, ma, ta, ka, pp);
-
-
+	std::string tmp;
 	// prepare for RealStatus object
-	std::vector<Player> players(NUM_BOYS, Player(ba, pa, ma, ta, ka, pp));
+	std::vector<Player> players;
+	for(int32_t i = 0; i < NUM_BOYS; i++){
+		char data[ATR_MAX_LEN];
+		file.getline(data, ATR_MAX_LEN);
+		tmp = data;
+		spliteAtr(tmp, ba, pa, ma, ta, ka, pp);
+		//PRINT_MSG("Set Pos: %d", pp);
+		players.push_back(Player(ba, pa, ma, ta, ka, pp));
+		//PRINT_MSG("Get Pos: %d", players[i].getPlay_Pos());
+	}
+
 	std::vector<Position> init_position(NUM_BOYS, Position(0,0,true));
 	Bal_Atr bal_atr = {0xc1, 0x01}; // blue, middle
 	Ball ball(bal_atr);

@@ -63,7 +63,7 @@ class PlayerStatus : public Status
 		Kee_Atr getPlayerKee_Atr();
 
 	private:
-		Player &player;
+		Player player;
 		//bool	catch_ball;
 };
 

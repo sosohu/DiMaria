@@ -1,8 +1,8 @@
 
 HOME=/home/sosohu/workspace/DiMaria
 CC=gcc
-CFLAGS=-O3 -fPIC -g
-CXXFLAGS=-O3 -fPIC --std=c++0x -DDEBUG -g
+CFLAGS=-O3 -fPIC -Wformat -g
+CXXFLAGS=-O3 -fPIC -Wformat --std=c++0x -DDEBUG -g
 AR=ar
 ARFLAGS=-r
 

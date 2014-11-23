@@ -35,10 +35,16 @@
 		printf(RED format NONE"\n", ##args);\
 	}
 
+	#define PRINT_INFO(format, args...) \
+	{\
+		printf(BROWN "%s %s %d :  " NONE, __FILE__, __func__, __LINE__);\
+		printf(BROWN format NONE"\n", ##args);\
+	}
+
 #else
 	#define PRINT_MSG(format, args...)
 	#define PRINT_ERROR(format, args...) 
-	#define PRINT(MODE, format, args...)
+	#define PRINT_INFO(format, args...) 
 #endif
 
 
